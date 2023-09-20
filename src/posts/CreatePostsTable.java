@@ -1,8 +1,10 @@
-package database;
+package posts;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import database.DatabaseConnection;
 
 public class CreatePostsTable {
     public static void main(String[] args) {

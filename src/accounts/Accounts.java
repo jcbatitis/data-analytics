@@ -1,3 +1,4 @@
+package accounts;
 public class Accounts {
     private String userId;
     private Integer role;
