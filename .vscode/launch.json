@@ -1,0 +1,29 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "CreateUsersTable",
+      "request": "launch",
+      "mainClass": "users.CreateUsersTable",
+      "projectName": "data_analytics_hub_4b2055e"
+    },
+    {
+      "type": "java",
+      "name": "CreatePostsTable",
+      "request": "launch",
+      "mainClass": "posts.CreatePostsTable",
+      "projectName": "data_analytics_hub_4b2055e"
+    },
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "data_analytics.Main",
+      "vmArgs": "--module-path /Users/jejo/Downloads/javafx-sdk-21/lib/ --add-modules=javafx.controls,javafx.fxml,javafx.graphics,javafx.base"
+    }
+  ]
+}
