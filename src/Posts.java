@@ -1,4 +1,4 @@
-package posts;
+
 import java.sql.Date;
 
 public class Posts {

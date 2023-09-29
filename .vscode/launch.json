@@ -22,7 +22,7 @@
       "type": "java",
       "name": "Main",
       "request": "launch",
-      "mainClass": "data_analytics.Main",
+      "mainClass": "Main",
       "vmArgs": "--module-path /Users/jejo/Downloads/javafx-sdk-21/lib/ --add-modules=javafx.controls,javafx.fxml,javafx.graphics,javafx.base"
     }
   ]

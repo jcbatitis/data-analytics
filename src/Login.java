@@ -1,28 +1,24 @@
-package data_analytics;
-
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class Main extends Application {
-    @Override
-    public void start(Stage applicationStage) {
-        applicationStage.setTitle("Data Analytics Hub");
-        applicationStage.show();
+public class Login extends Stage {
+
+    Login() {
+        this.setTitle("Data Analytics Hub");
+        this.show();
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -30,8 +26,12 @@ public class Main extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        this.setX((primScreenBounds.getWidth() - this.getWidth()) / 2);
+        this.setY((primScreenBounds.getHeight() - this.getHeight()) / 2);
+
         Scene scene = new Scene(grid, 300, 275);
-        applicationStage.setScene(scene);
+        this.setScene(scene);
 
         Text sceneTitle = new Text("Welcome");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -66,10 +66,9 @@ public class Main extends Application {
         loginBtn.setOnAction((event) -> {
             actiontarget.setFill(Color.FIREBRICK);
             actiontarget.setText("Sign in button pressed");
-        });
-    }
 
-    public static void main(String[] args) {
-        launch(args);
+            // applicationStage.close();
+            // start(new Stage());
+        });
     }
 }
