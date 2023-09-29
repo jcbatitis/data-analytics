@@ -1,3 +1,4 @@
+package views;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -14,9 +15,17 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class Login extends Stage {
+public class LoginView extends Stage {
 
-    Login() {
+    private Label usernameLabel;
+    private Label passwordLabel;
+
+    public TextField usernameField;
+    public TextField passwordField;
+
+    public Button submitButton;
+
+    public LoginView() {
         this.setTitle("Data Analytics Hub");
         this.show();
 
@@ -33,42 +42,40 @@ public class Login extends Stage {
         Scene scene = new Scene(grid, 300, 275);
         this.setScene(scene);
 
+        // Header
         Text sceneTitle = new Text("Welcome");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(sceneTitle, 0, 0, 2, 1);
 
-        Label username = new Label("Username: ");
-        grid.add(username, 0, 1);
-
-        TextField usernameField = new TextField();
+        // Username
+        usernameLabel = new Label("Username: ");
+        usernameField = new TextField();
+        grid.add(usernameLabel, 0, 1);
         grid.add(usernameField, 1, 1);
 
-        Label password = new Label("Password: ");
-        grid.add(password, 0, 2);
-
-        TextField passwordField = new TextField();
+        // Password
+        passwordLabel = new Label("Password: ");
+        passwordField = new TextField();
+        grid.add(passwordLabel, 0, 2);
         grid.add(passwordField, 1, 2);
 
-        Button loginBtn = new Button("Sign in");
+        // Submit
+        submitButton = new Button("Sign in");
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.BOTTOM_RIGHT);
+        hBox.getChildren().add(submitButton);
 
-        hBox.getChildren().add(loginBtn);
-
-        Text actiontarget = new Text();
+        Text validationMessage = new Text();
         HBox bbox = new HBox(10);
-        grid.add(actiontarget, 1, 4);
-        bbox.getChildren().add(actiontarget);
+        grid.add(validationMessage, 1, 4);
+        bbox.getChildren().add(validationMessage);
 
         grid.add(hBox, 1, 3);
         grid.add(bbox, 1, 4);
 
-        loginBtn.setOnAction((event) -> {
-            actiontarget.setFill(Color.FIREBRICK);
-            actiontarget.setText("Sign in button pressed");
-
-            // applicationStage.close();
-            // start(new Stage());
+        submitButton.setOnAction((event) -> {
+            validationMessage.setFill(Color.FIREBRICK);
+            validationMessage.setText("Wrong username and password");
         });
     }
 }

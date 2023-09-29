@@ -1,7 +1,8 @@
+package controllers;
 
 import java.sql.Date;
 
-public class Posts {
+public class PostController {
     private String id;
     private String content;
     private String author;
@@ -9,7 +10,7 @@ public class Posts {
     private Integer shares;
     private Date date;
 
-    public Posts(String id, String content, String author, Integer likes, Integer shares, Date date) {
+    public PostController(String id, String content, String author, Integer likes, Integer shares, Date date) {
         this.id = id;
         this.content = content;
         this.author = author;

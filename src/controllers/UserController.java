@@ -1,6 +1,6 @@
+package controllers;
 
-
-public class Users {
+public class UserController {
     private String id;
     private String first_name;
     private String last_name;
@@ -8,7 +8,8 @@ public class Users {
     private String password;
     private Boolean is_vip;
 
-    public Users(String id, String first_name, String last_name, String username, String password, Boolean is_vip)  {
+    public UserController(String id, String first_name, String last_name, String username, String password,
+            Boolean is_vip) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
