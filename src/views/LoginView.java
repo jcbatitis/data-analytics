@@ -72,10 +72,5 @@ public class LoginView extends Stage {
 
         grid.add(hBox, 1, 3);
         grid.add(bbox, 1, 4);
-
-        submitButton.setOnAction((event) -> {
-            validationMessage.setFill(Color.FIREBRICK);
-            validationMessage.setText("Wrong username and password");
-        });
     }
 }

@@ -12,7 +12,7 @@ public class LoginController {
         database = new Database();
     }
 
-    public void showLogin() {
+    public void show() {
         view.show();
 
         view.submitButton.setOnAction(e -> {

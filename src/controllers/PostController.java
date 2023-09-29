@@ -1,46 +1,24 @@
 package controllers;
 
-import java.sql.Date;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import models.Database;
+import models.Post;
+import views.PostView;
 
 public class PostController {
-    private String id;
-    private String content;
-    private String author;
-    private Integer likes;
-    private Integer shares;
-    private Date date;
+    private PostView view;
+    private Database database;
 
-    public PostController(String id, String content, String author, Integer likes, Integer shares, Date date) {
-        this.id = id;
-        this.content = content;
-        this.author = author;
-        this.likes = likes;
-        this.shares = shares;
-        this.date = date;
-
+    public PostController() {
+        view = new PostView();
+        database = new Database();
     }
 
-    public String getId() {
-        return id;
-    }
+    public void show() {
+        ObservableList<Post> posts = FXCollections.observableArrayList(database.getPosts());
+        view.setPosts(posts);
 
-    public String getContent() {
-        return content;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public Integer getShares() {
-        return shares;
-    }
-
-    public Date getDate() {
-        return date;
+        view.show();
     }
 }

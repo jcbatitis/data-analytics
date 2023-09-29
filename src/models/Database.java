@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Database {
 
@@ -30,5 +32,33 @@ public class Database {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<Post> getPosts() {
+        List<Post> postList = new ArrayList<>();
+        String query = "SELECT * FROM Posts";
+
+        try (Connection connection = Database.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String id = resultSet.getString("id");
+                    String content = resultSet.getString("content");
+                    String author = resultSet.getString("author");
+                    int likes = resultSet.getInt("likes");
+                    int shares = resultSet.getInt("shares");
+                    String date = resultSet.getString("date");
+
+                    postList.add(new Post(id, content, author, likes, shares, date));
+                }
+
+                return postList;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return postList;
+        }
+
     }
 }

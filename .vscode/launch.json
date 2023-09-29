@@ -6,41 +6,6 @@
   "configurations": [
     {
       "type": "java",
-      "name": "CreateUserRow",
-      "request": "launch",
-      "mainClass": "database.CreateUserRow",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
-      "name": "CreateUsersTable",
-      "request": "launch",
-      "mainClass": "database.CreateUsersTable",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
-      "name": "CreatePostsTable",
-      "request": "launch",
-      "mainClass": "database.CreatePostsTable",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
-      "name": "CreateUsersTable",
-      "request": "launch",
-      "mainClass": "users.CreateUsersTable",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
-      "name": "CreatePostsTable",
-      "request": "launch",
-      "mainClass": "posts.CreatePostsTable",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",
