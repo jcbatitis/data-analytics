@@ -1,8 +1,8 @@
 package controllers;
 
+import _sqlite.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import models.Database;
 import models.Post;
 import views.PostView;
 
