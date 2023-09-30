@@ -26,7 +26,7 @@ public class UserDao implements Dao<User> {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    String id = resultSet.getString("id");
+                    String id = resultSet.getString("user_id");
                     String first_name = resultSet.getString("first_name");
                     String last_name = resultSet.getString("last_name");
                     String username = resultSet.getString("username");
@@ -54,7 +54,7 @@ public class UserDao implements Dao<User> {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 if (resultSet.next()) {
-                    String id = resultSet.getString("id");
+                    String id = resultSet.getString("user_id");
                     String first_name = resultSet.getString("first_name");
                     String last_name = resultSet.getString("last_name");
                     String username = resultSet.getString("username");
@@ -76,7 +76,7 @@ public class UserDao implements Dao<User> {
                 " VALUES (?,?,?,?,?,?)";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, user.getId());
+            statement.setString(1, user.getUserId());
             statement.setString(2, user.getFirstName());
             statement.setString(3, user.getLastName());
             statement.setString(4, user.getUsername());
@@ -142,7 +142,7 @@ public class UserDao implements Dao<User> {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 if (resultSet.next()) {
-                    String id = resultSet.getString("id");
+                    String id = resultSet.getString("user_id");
                     String first_name = resultSet.getString("first_name");
                     String last_name = resultSet.getString("last_name");
                     String username = resultSet.getString("username");

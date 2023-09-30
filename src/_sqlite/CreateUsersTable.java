@@ -11,13 +11,13 @@ public class CreateUsersTable {
         try (Connection con = CreateTableDatabaseConnection.getConnection();
                 Statement stmt = con.createStatement();) {
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + TABLE_NAME
-                    + "(id TEXT NOT NULL,"
+                    + "(user_id TEXT NOT NULL,"
                     + "first_name TEXT NOT NULL,"
                     + "last_name TEXT NOT NULL,"
                     + "username TEXT NOT NULL,"
                     + "password TEXT NOT NULL,"
                     + "is_vip INT NOT NULL,"
-                    + "PRIMARY KEY (id))");
+                    + "PRIMARY KEY (user_id))");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

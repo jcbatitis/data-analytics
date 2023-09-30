@@ -40,7 +40,7 @@ public class LoginView extends Stage {
     private void setupDefaults() {
         StageUtil.centerStage(this);
 
-        grid = GridUtil.setupGrid();
+        grid = GridUtil.setupGrid(true);
         scene = new Scene(grid, 600, 275);
         this.setScene(scene);
 
@@ -48,6 +48,10 @@ public class LoginView extends Stage {
         setupUsername();
         setupPassword();
         setupButtons();
+
+        usernameField.setText("ruff");
+        passwordField.setText("ruff");
+
     }
 
     private void setupHeader() {
@@ -72,7 +76,6 @@ public class LoginView extends Stage {
 
     private void setupButtons() {
         HBox bbox = new HBox(10);
-        grid.add(validationMessage, 1, 3);
         bbox.getChildren().add(validationMessage);
         grid.add(bbox, 1, 3);
 
@@ -81,11 +84,9 @@ public class LoginView extends Stage {
 
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.BOTTOM_RIGHT);
-        hBox.getChildren().add(registerButton);
-        hBox.getChildren().add(submitButton);
+        hBox.getChildren().addAll(registerButton, submitButton);
 
         grid.add(hBox, 1, 4);
-
 
     }
 

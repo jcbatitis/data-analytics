@@ -17,7 +17,9 @@ public class CreatePostsTable {
                     + "likes INT,"
                     + "shares INT,"
                     + "date TEXT NOT NUll,"
-                    + "PRIMARY KEY (id))");
+                    + "user_id TEXT NOT NULL,"
+                    + "PRIMARY KEY (id, user_id),"
+                    + "FOREIGN KEY (user_id) REFERENCES Users(user_id))");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

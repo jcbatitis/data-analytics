@@ -11,7 +11,7 @@ public class CreatePostRow {
         try (Connection con = CreateTableDatabaseConnection.getConnection();
                 Statement stmt = con.createStatement();) {
             String query = "INSERT INTO " + TABLE_NAME +
-                    " VALUES ('1', 'Ruff ruff', 'Ruffles', 1000000, 1000000, '30/09/1995 23:59')";
+                    " VALUES ('1', 'Ruff ruff', 'Ruffles', 1000000, 1000000, '30/09/1995 23:59', '1')";
 
             int result = stmt.executeUpdate(query);
 
