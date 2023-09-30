@@ -1,8 +1,12 @@
 package services;
 
+import java.util.List;
+
 public interface Dao<T> {
 
-    T get(String[] params);
+    List<T> getAll();
+
+    T get(String id);
 
     void create(T t);
 

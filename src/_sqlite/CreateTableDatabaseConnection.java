@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DatabaseConnection {
+public class CreateTableDatabaseConnection {
 
     private static final String DB_URL = "jdbc:sqlite:data_analytics.db";
 

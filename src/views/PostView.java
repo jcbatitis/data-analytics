@@ -1,12 +1,8 @@
 package views;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import _sqlite.Database;
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -21,7 +17,6 @@ import models.Post;
 public class PostView extends Stage {
 
     private TableView<Post> table;
-    private Database database;
     private ObservableList<Post> posts;
 
     public PostView() {

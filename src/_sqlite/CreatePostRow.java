@@ -8,10 +8,10 @@ public class CreatePostRow {
     public static void main(String[] args) {
         final String TABLE_NAME = "Posts";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = CreateTableDatabaseConnection.getConnection();
                 Statement stmt = con.createStatement();) {
             String query = "INSERT INTO " + TABLE_NAME +
-                    " VALUES (1, 'Ruff ruff', 'Ruffles', 1000000, 1000000, '30/09/1995 23:59')";
+                    " VALUES ('1', 'Ruff ruff', 'Ruffles', 1000000, 1000000, '30/09/1995 23:59')";
 
             int result = stmt.executeUpdate(query);
 

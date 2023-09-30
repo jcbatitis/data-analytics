@@ -1,16 +1,17 @@
+
 package controllers;
 
-import _sqlite.Database;
-import services.LoginDao;
+import models.User;
+import services.UserDao;
 import views.LoginView;
 
 public class LoginController {
     private LoginView view;
-    private LoginDao dao;
+    private UserDao dao;
 
     public LoginController() {
         view = new LoginView();
-        dao = new LoginDao();
+        dao = new UserDao();
     }
 
     public void show() {
@@ -19,13 +20,23 @@ public class LoginController {
         view.submitButton.setOnAction(e -> {
             String username = view.usernameField.getText();
             String password = view.passwordField.getText();
+            view.validationMessage.setText("");
 
             if (dao.checkUserIfValid(username, password)) {
-                System.out.println("Valid");
+                User user = dao.getUserByUsername(username);
+                DashboardController dashboardController = new DashboardController(user);
+                view.close();
+                dashboardController.show();
             } else {
-                System.out.println("Invalid");
+                view.validationMessage.setText("Please fill in the required details.");
 
             }
+        });
+
+        view.registerButton.setOnAction(e -> {
+            view.close();
+            new RegistrationController().show();
+            ;
         });
     }
 }

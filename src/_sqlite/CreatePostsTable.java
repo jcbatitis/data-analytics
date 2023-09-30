@@ -8,10 +8,10 @@ public class CreatePostsTable {
     public static void main(String[] args) {
         final String TABLE_NAME = "Posts";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = CreateTableDatabaseConnection.getConnection();
                 Statement stmt = con.createStatement();) {
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + TABLE_NAME
-                    + "(id INT NOT NULL,"
+                    + "(id TEXT NOT NULL,"
                     + "content TEXT NOT NULL,"
                     + "author TEXT NOT NULL,"
                     + "likes INT,"

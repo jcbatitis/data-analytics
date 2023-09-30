@@ -1,6 +1,5 @@
 package views;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -26,7 +25,10 @@ public class LoginView extends Stage {
     public TextField usernameField;
     public TextField passwordField;
 
+    public Button registerButton;
     public Button submitButton;
+
+    public Text validationMessage = new Text();
 
     public LoginView() {
         this.setTitle("Data Analytics Hub");
@@ -39,13 +41,13 @@ public class LoginView extends Stage {
         StageUtil.centerStage(this);
 
         grid = GridUtil.setupGrid();
-        scene = new Scene(grid, 300, 275);
+        scene = new Scene(grid, 600, 275);
         this.setScene(scene);
 
         setupHeader();
         setupUsername();
         setupPassword();
-        setupSubmitButton();
+        setupButtons();
     }
 
     private void setupHeader() {
@@ -68,18 +70,23 @@ public class LoginView extends Stage {
         grid.add(passwordField, 1, 2);
     }
 
-    private void setupSubmitButton() {
+    private void setupButtons() {
+        HBox bbox = new HBox(10);
+        grid.add(validationMessage, 1, 3);
+        bbox.getChildren().add(validationMessage);
+        grid.add(bbox, 1, 3);
+
+        registerButton = new Button("Register");
         submitButton = new Button("Sign in");
+
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.BOTTOM_RIGHT);
+        hBox.getChildren().add(registerButton);
         hBox.getChildren().add(submitButton);
-        grid.add(hBox, 1, 3);
 
-        Text validationMessage = new Text();
-        HBox bbox = new HBox(10);
-        grid.add(validationMessage, 1, 4);
-        bbox.getChildren().add(validationMessage);
-        grid.add(bbox, 1, 4);
+        grid.add(hBox, 1, 4);
+
+
     }
 
 }

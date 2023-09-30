@@ -1,22 +1,22 @@
 package controllers;
 
-import _sqlite.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import models.Post;
+import services.PostDao;
 import views.PostView;
 
 public class PostController {
     private PostView view;
-    private Database database;
+    private PostDao dao;
 
     public PostController() {
         view = new PostView();
-        database = new Database();
+        dao = new PostDao();
     }
 
     public void show() {
-        ObservableList<Post> posts = FXCollections.observableArrayList(database.getPosts());
+        ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
         view.setPosts(posts);
 
         view.show();

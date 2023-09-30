@@ -8,10 +8,10 @@ public class CreateUserRow {
     public static void main(String[] args) {
         final String TABLE_NAME = "Users";
 
-        try (Connection con = DatabaseConnection.getConnection();
+        try (Connection con = CreateTableDatabaseConnection.getConnection();
                 Statement stmt = con.createStatement();) {
             String query = "INSERT INTO " + TABLE_NAME +
-                    " VALUES (1, 'Ruff', 'Malt', 'ruffMalt', 'ruff', 1)";
+                    " VALUES ('1', 'Ruff', 'Malt', 'ruffMalt', 'ruff', 1)";
 
             int result = stmt.executeUpdate(query);
 

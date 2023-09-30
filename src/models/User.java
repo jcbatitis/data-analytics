@@ -30,6 +30,10 @@ public class User {
         return last_name;
     }
 
+    public String getFullName() {
+        return String.format("%s %s", first_name, last_name);
+    }
+
     public String getUsername() {
         return username;
     }
