@@ -1,37 +1,37 @@
 package models;
 
 public class User {
-    private String user_id;
-    private String first_name;
-    private String last_name;
+    private String userId;
+    private String firstName;
+    private String lastName;
     private String username;
     private String password;
-    private Boolean is_vip;
+    private Boolean isVIP;
 
-    public User(String user_id, String first_name, String last_name, String username, String password,
-            Boolean is_vip) {
-        this.user_id = user_id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+    public User(String userId, String firstName, String lastName, String username, String password,
+            Boolean isVIP) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.username = username;
         this.password = password;
-        this.is_vip = is_vip;
+        this.isVIP = isVIP;
     }
 
     public String getUserId() {
-        return user_id;
+        return userId;
     }
 
     public String getFirstName() {
-        return first_name;
+        return firstName;
     }
 
     public String getLastName() {
-        return last_name;
+        return lastName;
     }
 
     public String getFullName() {
-        return String.format("%s %s", first_name, last_name);
+        return String.format("%s %s", firstName, lastName);
     }
 
     public String getUsername() {
@@ -43,6 +43,6 @@ public class User {
     }
 
     public Boolean isVIP() {
-        return is_vip;
+        return isVIP;
     }
 }

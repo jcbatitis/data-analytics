@@ -40,7 +40,7 @@ public class LoginView extends Stage {
     private void setupDefaults() {
         StageUtil.centerStage(this);
 
-        grid = GridUtil.setupGrid(true);
+        grid = GridUtil.setupCenteredGrid();
         scene = new Scene(grid, 600, 275);
         this.setScene(scene);
 

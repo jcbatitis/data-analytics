@@ -1,7 +1,7 @@
 
 import controllers.LoginController;
 import controllers.PostController;
-import controllers.RegistrationController;
+import controllers.UserController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

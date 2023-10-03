@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -15,7 +16,7 @@ import javafx.stage.Stage;
 import utils.GridUtil;
 import utils.StageUtil;
 
-public class RegistrationView extends Stage {
+public class UserView extends Stage {
 
     public GridPane grid;
     private Scene scene;
@@ -34,13 +35,14 @@ public class RegistrationView extends Stage {
     public TextField confirmPasswordField;
     public CheckBox isVipField;
 
-    public Button loginButton;
-    public Button submitButton;
+    public Button backButton = new Button();
+    public Button submitButton = new Button();
 
+    public Text sceneTitle = new Text();
     public Text validationMessage = new Text();
 
-    public RegistrationView() {
-        this.setTitle("Data Analytics Hub");
+    public UserView() {
+        this.setTitle("Data Analytics Hub - Registration");
         this.show();
 
         setupDefaults();
@@ -50,82 +52,81 @@ public class RegistrationView extends Stage {
         StageUtil.centerStage(this);
 
         grid = GridUtil.setupGrid();
-        scene = new Scene(grid, 400, 350);
+        scene = new Scene(grid, 400, 450);
         this.setScene(scene);
 
         setupHeader();
-        setupFirstName();
-        setupLastName();
-        setupUsername();
-        setupPassword();
-        setupConfirmPassword();
+        setupPersonalDetailControls();
+        setupAccountDetailControls();
         setupIsVip();
         setupButtons();
     }
 
     private void setupHeader() {
-        Text sceneTitle = new Text("Welcome");
-        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 22));
         grid.add(sceneTitle, 0, 0, 2, 1);
     }
 
-    private void setupFirstName() {
+    private void setupPersonalDetailControls() {
+        Text sceneTitle = new Text("Personal Details");
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        grid.add(sceneTitle, 0, 1, 2, 1);
+
         firstNameLabel = new Label("First Name: ");
         firstNameField = new TextField();
-        grid.add(firstNameLabel, 0, 1);
-        grid.add(firstNameField, 1, 1);
-    }
+        grid.add(firstNameLabel, 0, 2);
+        grid.add(firstNameField, 1, 2);
 
-    private void setupLastName() {
         lastNameLabel = new Label("Last Name: ");
         lastNameField = new TextField();
-        grid.add(lastNameLabel, 0, 2);
-        grid.add(lastNameField, 1, 2);
+        grid.add(lastNameLabel, 0, 3);
+        grid.add(lastNameField, 1, 3);
+
+        Separator separator = new Separator();
+        grid.add(separator, 0, 4, 2, 1);
     }
 
-    private void setupUsername() {
+    private void setupAccountDetailControls() {
+        Text sceneTitle = new Text("Account Details");
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+
+        grid.add(sceneTitle, 0, 5, 2, 1);
         usernameLabel = new Label("Username: ");
         usernameField = new TextField();
-        grid.add(usernameLabel, 0, 3);
-        grid.add(usernameField, 1, 3);
-    }
+        grid.add(usernameLabel, 0, 6);
+        grid.add(usernameField, 1, 6);
 
-    private void setupPassword() {
         passwordLabel = new Label("Password: ");
         passwordField = new TextField();
-        grid.add(passwordLabel, 0, 4);
-        grid.add(passwordField, 1, 4);
-    }
+        grid.add(passwordLabel, 0, 7);
+        grid.add(passwordField, 1, 7);
 
-    private void setupConfirmPassword() {
         confirmPasswordLabel = new Label("Confirm Password: ");
         confirmPasswordField = new TextField();
-        grid.add(confirmPasswordLabel, 0, 5);
-        grid.add(confirmPasswordField, 1, 5);
+        grid.add(confirmPasswordLabel, 0, 8);
+        grid.add(confirmPasswordField, 1, 8);
+
     }
 
     private void setupIsVip() {
         isVipLabel = new Label("Is VIP: ");
         isVipField = new CheckBox();
-        grid.add(isVipLabel, 0, 6);
-        grid.add(isVipField, 1, 6);
+        grid.add(isVipLabel, 0, 9);
+        grid.add(isVipField, 1, 9);
     }
 
     private void setupButtons() {
         HBox bbox = new HBox(10);
-        grid.add(validationMessage, 1, 7);
+        grid.add(validationMessage, 1, 10);
         bbox.setAlignment(Pos.CENTER_RIGHT);
         bbox.getChildren().add(validationMessage);
-        grid.add(bbox, 1, 7);
-
-        loginButton = new Button("Back to Login");
-        submitButton = new Button("Register");
+        grid.add(bbox, 1, 10);
 
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.BOTTOM_RIGHT);
-        hBox.getChildren().add(loginButton);
+        hBox.getChildren().add(backButton);
         hBox.getChildren().add(submitButton);
-        grid.add(hBox, 1, 8);
+        grid.add(hBox, 1, 11);
 
     }
 }

@@ -11,7 +11,7 @@ public class CreateUserRow {
         try (Connection con = CreateTableDatabaseConnection.getConnection();
                 Statement stmt = con.createStatement();) {
             String query = "INSERT INTO " + TABLE_NAME +
-                    " VALUES ('1', 'Ruff', 'Malt', 'ruffMalt', 'ruff', 1)";
+                    " VALUES ('1', 'Ruff', 'Malt', 'ruff', 'ruff', 1)";
 
             int result = stmt.executeUpdate(query);
 

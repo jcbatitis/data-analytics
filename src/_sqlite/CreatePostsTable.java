@@ -16,7 +16,7 @@ public class CreatePostsTable {
                     + "author TEXT NOT NULL,"
                     + "likes INT,"
                     + "shares INT,"
-                    + "date TEXT NOT NUll,"
+                    + "date_time TEXT NOT NUll,"
                     + "user_id TEXT NOT NULL,"
                     + "PRIMARY KEY (id, user_id),"
                     + "FOREIGN KEY (user_id) REFERENCES Users(user_id))");

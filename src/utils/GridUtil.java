@@ -15,16 +15,23 @@ public final class GridUtil {
         return grid;
     }
 
-    public static GridPane setupGrid(Boolean centered) {
+    public static GridPane setupCenteredGrid() {
         GridPane grid = new GridPane();
 
-        if (centered) {
-            grid.setAlignment(Pos.CENTER);
-        }
-
+        grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
+
+        return grid;
+
+    }
+
+    public static GridPane setupNoPaddingGrid() {
+        GridPane grid = new GridPane();
+
+        grid.setHgap(10);
+        grid.setVgap(10);
 
         return grid;
 

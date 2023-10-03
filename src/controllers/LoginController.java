@@ -35,7 +35,7 @@ public class LoginController {
 
         view.registerButton.setOnAction(e -> {
             view.close();
-            new RegistrationController().show();
+            new UserController().show();
             ;
         });
     }

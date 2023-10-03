@@ -95,11 +95,52 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public void update(User user, String[] params) {
+    public void update(User user) {
+        String query = "UPDATE Users SET " +
+                "user_id = ?," +
+                "first_name = ?," +
+                "last_name = ?," +
+                "username = ?," +
+                "password = ?," +
+                "is_vip = ?" +
+                "WHERE user_id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, user.getUserId());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getLastName());
+            statement.setString(4, user.getUsername());
+            statement.setString(5, user.getPassword());
+            statement.setBoolean(6, user.isVIP());
+            statement.setString(7, user.getUserId());
+
+            int result = statement.executeUpdate();
+
+            if (result == 1) {
+                System.out.println("Update into table executed successfully");
+                System.out.println(result + " row(s) affected");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void delete(User user) {
+        String query = "DELETE FROM Users WHERE user_id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, user.getUserId());
+
+            int result = statement.executeUpdate();
+
+            if (result == 1) {
+                System.out.println("Deletion from table executed successfully");
+                System.out.println(result + " row(s) affected");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean checkUserIfValid(String username, String password) {
@@ -131,7 +172,6 @@ public class UserDao implements Dao<User> {
             return false;
         }
     }
-
 
     public User getUserByUsername(String selectedUsername) {
         String query = "SELECT * FROM Users WHERE username = ?";
