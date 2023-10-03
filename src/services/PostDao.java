@@ -48,10 +48,10 @@ public class PostDao implements Dao<Post> {
     @Override
     public Post get(String postId) {
         String query = "SELECT * FROM Posts " +
-                "WHERE id LIKE ?";
+                "WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, "%" + postId + "%");
+            statement.setString(1, postId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -80,6 +80,32 @@ public class PostDao implements Dao<Post> {
 
     @Override
     public void update(Post post) {
+        String query = "UPDATE Posts SET " +
+                "content = ?," +
+                "author = ?," +
+                "likes = ?," +
+                "shares = ?," +
+                "date_time = ?" +
+                "WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, post.getContent());
+            statement.setString(2, post.getAuthor());
+
+            statement.setInt(3, post.getLikes());
+            statement.setInt(4, post.getShares());
+            statement.setString(5, post.getDateTime());
+            statement.setString(6, post.getId());
+
+            int result = statement.executeUpdate();
+
+            if (result == 1) {
+                System.out.println("Update into table executed successfully");
+                System.out.println(result + " row(s) affected");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

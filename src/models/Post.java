@@ -14,7 +14,6 @@ public class Post {
 
     private final BooleanProperty selected = new SimpleBooleanProperty(false);
 
-
     public Post(String id, String content, String author, Integer likes, Integer shares, String dateTime,
             String userId) {
         this.id = id;
@@ -58,7 +57,11 @@ public class Post {
         return selected;
     }
 
-    public Boolean getSelected() {
+    public Boolean isSelected() {
         return selected.get();
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected.set(selected);
     }
 }

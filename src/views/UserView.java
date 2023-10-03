@@ -68,9 +68,9 @@ public class UserView extends Stage {
     }
 
     private void setupPersonalDetailControls() {
-        Text sceneTitle = new Text("Personal Details");
-        sceneTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
-        grid.add(sceneTitle, 0, 1, 2, 1);
+        Text personalDetailsTitle = new Text("Personal Details");
+        personalDetailsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        grid.add(personalDetailsTitle, 0, 1, 2, 1);
 
         firstNameLabel = new Label("First Name: ");
         firstNameField = new TextField();
@@ -87,10 +87,10 @@ public class UserView extends Stage {
     }
 
     private void setupAccountDetailControls() {
-        Text sceneTitle = new Text("Account Details");
-        sceneTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        Text accountDetailsTitle = new Text("Account Details");
+        accountDetailsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
 
-        grid.add(sceneTitle, 0, 5, 2, 1);
+        grid.add(accountDetailsTitle, 0, 5, 2, 1);
         usernameLabel = new Label("Username: ");
         usernameField = new TextField();
         grid.add(usernameLabel, 0, 6);
@@ -117,7 +117,7 @@ public class UserView extends Stage {
 
     private void setupButtons() {
         HBox bbox = new HBox(10);
-        grid.add(validationMessage, 1, 10);
+        // grid.add(validationMessage, 1, 10);
         bbox.setAlignment(Pos.CENTER_RIGHT);
         bbox.getChildren().add(validationMessage);
         grid.add(bbox, 1, 10);

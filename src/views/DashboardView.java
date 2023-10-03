@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -32,6 +34,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import models.Post;
 import utils.GridUtil;
 import utils.StageUtil;
@@ -57,6 +60,10 @@ public class DashboardView extends Stage {
 
     public MenuItem editProfile = new MenuItem("Edit Profile");
     public MenuItem subscribe = new MenuItem("Subscribe to VIP program");
+
+    public Post selectedPost;
+
+    TableColumn<Post, Void> selectColumn = new TableColumn<>("Select");
 
     public DashboardView() {
         this.setTitle("Data Analytics Hub");
@@ -90,6 +97,7 @@ public class DashboardView extends Stage {
         this.setScene(scene);
 
         setupHeader();
+        setupSearchSection();
         setupButtons();
         setupPostsTable();
     }
@@ -165,26 +173,36 @@ public class DashboardView extends Stage {
 
         table.setEditable(true);
 
-        List<TableColumn<Post, ?>> columns = Arrays.asList(id, content, author, likes, shares, dateTime,
+        List<TableColumn<Post, ?>> columns = Arrays.asList(selectColumn, id, content, author, likes, shares, dateTime,
                 userId);
 
         table.getColumns().setAll(columns);
 
-        for (Post post : this.posts) {
-            post.selectedProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal) {
-                    System.out.println("Checkbox for post with ID " + post.getId() + " is checked.");
-                } else {
-                    System.out.println("Checkbox for post with ID " + post.getId() + " is unchecked.");
-                }
-            });
-        }
         table.setItems(this.posts);
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(table);
 
         grid.add(layout, 0, 4, 2, 1);
+    }
+
+    public void setSelectButtonAction(Consumer<Post> action) {
+        selectColumn.setCellFactory(param -> new TableCell<>() {
+            private final Button btn = new Button("Select");
+
+            {
+                btn.setOnAction(event -> {
+                    Post post = getTableView().getItems().get(getIndex());
+                    action.accept(post);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : btn);
+            }
+        });
     }
 }
 
