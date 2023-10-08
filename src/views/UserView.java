@@ -1,16 +1,13 @@
 package views;
 
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -37,7 +34,6 @@ public class UserView {
     private final PasswordField confirmPasswordField = new PasswordField();
 
     private final GridPane vipGrid = GridUtil.setupNoPaddingGrid();
-    private final ToggleGroup vipToggleGroup = new ToggleGroup();
 
     private final CheckBox isVipField = new CheckBox();
     private final Button backButton = new Button("Back");

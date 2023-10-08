@@ -9,6 +9,7 @@ import models.User;
 import services.PostDao;
 import utils.GlobalUtil;
 import utils.UUIDUtil;
+import utils.ValidatorUtil;
 import views.DashboardView;
 import views.PostView;
 
@@ -44,9 +45,9 @@ public class PostController {
         view.getSubmitButton().setOnAction(this::submitHandler);
         view.getBackButton().setOnAction(this::backHandler);
         view.getLikesField().textProperty()
-                .addListener(numericHandler(view.getLikesField()));
+                .addListener(GlobalUtil.numericHandler(view.getLikesField()));
         view.getSharesField().textProperty()
-                .addListener(numericHandler(view.getSharesField()));
+                .addListener(GlobalUtil.numericHandler(view.getSharesField()));
     }
 
     public void setPost(Post post) {
@@ -112,6 +113,11 @@ public class PostController {
                 return;
             }
 
+            if (!ValidatorUtil.isValidDate(dateTime)) {
+                view.setValidationMessage("Invalid date format.");
+                return;
+            }
+
             String postId = hasPostDetails ? post.getId()
                     : UUIDUtil.guid();
 
@@ -149,14 +155,6 @@ public class PostController {
         view.disableFormControls(false);
         view.setValidationMessage("");
         view.getEditButton().setDisable(true);
-    }
-
-    private ChangeListener<String> numericHandler(TextField textField) {
-        return (observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                textField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        };
     }
 
     /**

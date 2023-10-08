@@ -9,12 +9,16 @@ import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.Post;
 import models.User;
 import services.PostDao;
+import utils.GlobalUtil;
 import views.DashboardView;
 import views.DataVisualisationView;
 import views.LoginView;
@@ -63,6 +67,9 @@ public class DashboardController {
      * SETUPS EVENT HANDLERS FOR VIEW
      */
     private void setupEventHandlers() {
+        toggleSearchSectionHandler();
+        toggleSortSectionHandler();
+
         // adds delay for searching in table
         PauseTransition searchDelay = new PauseTransition(Duration.seconds(1));
         PauseTransition sortDelay = new PauseTransition(Duration.seconds(1));
@@ -73,6 +80,9 @@ public class DashboardController {
         view.getExportButton().setOnAction(this::exportHandler);
         view.getImportButton().setOnAction(this::importHandler);
 
+        view.getToggleSearchSection().selectedProperty().addListener((o, ol, nv) -> toggleSearchSectionHandler());
+        view.getToggleSortSection().selectedProperty().addListener((o, ol, nv) -> toggleSortSectionHandler());
+
         view.getEditProfileMenu().setOnAction(this::editProfileHandler);
         view.getSubscriptionMenu().setOnAction(this::subscribeHandler);
 
@@ -81,7 +91,7 @@ public class DashboardController {
         view.getSortButton().setOnAction(this::sortHandler);
 
         view.getSearchField().textProperty().addListener((o, oldValue, newValue) -> searchDelay.playFromStart());
-        view.getSortField().textProperty().addListener((o, oldValue, newValue) -> sortDelay.playFromStart());
+        view.getSortField().textProperty().addListener(GlobalUtil.numericHandler(view.getSortField()));
 
         view.setupSelectButtonEventHandler(event -> {
             Button clickedButton = (Button) event.getSource();
@@ -201,7 +211,7 @@ public class DashboardController {
     }
 
     private void searchHandler(ActionEvent e) {
-        String searchBy = view.getSearchToggleGroup();
+        String searchBy = view.getSearchToggleGroupValue();
         String searchTerm = view.getSearchTerm();
 
         if (searchTerm.isEmpty()) {
@@ -220,7 +230,7 @@ public class DashboardController {
     }
 
     private void sortHandler(ActionEvent e) {
-        String sortBy = view.getSortToggleGroup();
+        String sortBy = view.getSortToggleGroupValue();
         Integer limitValue = view.getSortValue();
         ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
 
@@ -258,6 +268,7 @@ public class DashboardController {
     }
 
     private void exportHandler(ActionEvent e) {
+        String message = "";
         ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
         view.getExportButton().setDisable(true);
 
@@ -265,12 +276,18 @@ public class DashboardController {
 
         if (job) {
             view.getExportButton().setDisable(false);
+            message = "Posts exported successfully!";
         } else {
             view.getExportButton().setDisable(false);
+            message = "Error exporting posts";
         }
+
+        view.setValidationMessage(message);
     }
 
     private void importHandler(ActionEvent e) {
+        String message = "";
+
         view.getImportButton().setDisable(true);
         Boolean job = dao.importAll();
 
@@ -278,8 +295,50 @@ public class DashboardController {
             view.getImportButton().setDisable(false);
             ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
             setTableItems(posts);
+            message = "Posts imported successfully!";
+
         } else {
             view.getImportButton().setDisable(false);
+            message = "Error importing posts";
         }
+        view.setValidationMessage(message);
+
     }
+
+    private void toggleSearchSectionHandler() {
+        Boolean isDisabled = !view.getToggleSearchSection().isSelected();
+        for (Toggle toggle : view.getSearchToggleGroup().getToggles()) {
+            Node node = (Node) toggle;
+            node.setDisable(isDisabled);
+        }
+
+        view.getSearchField().setDisable(isDisabled);
+        view.getSearchButton().setDisable(isDisabled);
+
+        if (!isDisabled) {
+            // If the search section is enabled, disable the sort section
+            view.getToggleSortSection().setSelected(false);
+            toggleSortSectionHandler();
+        }
+        view.getSortField().setText("");
+    }
+
+    private void toggleSortSectionHandler() {
+        Boolean isDisabled = !view.getToggleSortSection().isSelected();
+        for (Toggle toggle : view.getSortToggleGroup().getToggles()) {
+            Node node = (Node) toggle;
+            node.setDisable(isDisabled);
+        }
+
+        view.getSortField().setDisable(isDisabled);
+        view.getSortButton().setDisable(isDisabled);
+
+        if (!isDisabled) {
+            // If the sort section is enabled, disable the search section
+            view.getToggleSearchSection().setSelected(false);
+            toggleSearchSectionHandler();
+        }
+        view.getSearchField().setText("");
+    }
+
 }

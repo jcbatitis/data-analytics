@@ -45,7 +45,7 @@ public class DataVisualisationView {
      */
     private void setupLayout() {
         grid = GridUtil.setupCenteredGrid();
-        scene = new Scene(grid, 800, 800);
+        scene = new Scene(grid, 550, 550);
 
         setupHeader();
         setupPieChart();

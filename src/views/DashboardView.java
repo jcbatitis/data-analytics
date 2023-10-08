@@ -6,8 +6,10 @@ import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -23,11 +25,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import models.Post;
+import utils.GlobalUtil;
 import utils.GridUtil;
 
 public class DashboardView {
@@ -37,32 +42,42 @@ public class DashboardView {
     private Scene scene;
 
     private final BorderPane root = new BorderPane();
+
     private final Text title = new Text();
     private final Text header = new Text();
-    private final Button clearButton = new Button("Clear");
+
+    // Table Controls
     private final Button addButton = new Button("Add New");
     private final Button refreshButton = new Button("Refresh");
-    private final Button dataVisualisationButton = new Button("Data Visualisation");
+
+    // VIP Controls
+    private final Button dataVisualisationButton = new Button("Reports");
     private final Button exportButton = new Button("Export");
     private final Button importButton = new Button("Import");
 
+    // Table Query Controls
+    private final ToggleGroup searchToggleGroup = new ToggleGroup();
+    private final TextField searchField = new TextField();
     private final Button searchSubmitButton = new Button("Search");
+    private final CheckBox toggleSearchSection = new CheckBox();
+
+    private final ToggleGroup sortToggleGroup = new ToggleGroup();
+    private final TextField sortField = new TextField();
     private final Button sortSubmitButton = new Button("Sort");
-    private final MenuItem editProfile = new MenuItem("Edit Profile");
-    private final MenuItem subscribe = new MenuItem("Subscriptions");
+    private final CheckBox toggleSortSection = new CheckBox();
 
-    private final MenuItem logout = new MenuItem("Log out");
-
+    // Menu and Profile Menu Items
     private final MenuBar menuBar = new MenuBar();
     private final Menu profileMenu = new Menu("Profile");
+    private final MenuItem editProfile = new MenuItem("Edit Profile");
+    private final MenuItem subscribe = new MenuItem("Subscriptions");
+    private final MenuItem logout = new MenuItem("Log out");
 
-    private final TextField searchField = new TextField();
-    private final TextField sortField = new TextField();
-    private final ToggleGroup searchToggleGroup = new ToggleGroup();
-    private final ToggleGroup sortToggleGroup = new ToggleGroup();
-
+    // Table and Action Column
     private final TableView<Post> table = new TableView<Post>();;
-    private final TableColumn<Post, Void> selectColumn = new TableColumn<>("Select");
+    private final TableColumn<Post, Void> selectColumn = new TableColumn<>("Action");
+
+    private final Text validationMessage = new Text();
 
     /**
      * INITIALISES VIEW
@@ -84,7 +99,7 @@ public class DashboardView {
         setupHeader();
         setupSearchSection();
         setupSortSection();
-        setupTableControlsSection();
+        setupVipControlSection();
         setupPostsTable();
 
         scene = new Scene(root, 900, 500);
@@ -99,17 +114,23 @@ public class DashboardView {
     }
 
     private void setupHeader() {
-        header.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        header.setFont(GlobalUtil.getHeaderFont());
         grid.add(header, 0, 0, 11, 1);
     }
 
     public void setupSearchSection() {
         GridPane searchGrid = GridUtil.setupNoPaddingGrid();
 
+        // Header
         Text searchTitle = new Text("Search");
-        searchTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
-        searchGrid.add(searchTitle, 0, 0, 2, 1);
+        HBox searchHeader = new HBox(5, toggleSearchSection, searchTitle);
 
+        searchTitle.setFont(GlobalUtil.getSubHeaderFont());
+        searchGrid.add(searchHeader, 0, 0, 2, 1);
+
+        toggleSearchSection.setSelected(false);
+
+        // Toggle Group
         RadioButton searchByTerm = new RadioButton("Term");
         RadioButton searchByPostId = new RadioButton("Post ID");
 
@@ -137,8 +158,12 @@ public class DashboardView {
         GridPane sortGrid = GridUtil.setupNoPaddingGrid();
 
         Text sortTitle = new Text("Sort");
-        sortTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
-        sortGrid.add(sortTitle, 0, 0, 2, 1);
+        HBox sortHeader = new HBox(5, toggleSortSection, sortTitle);
+
+        sortTitle.setFont(GlobalUtil.getSubHeaderFont());
+        sortGrid.add(sortHeader, 0, 0, 2, 1);
+
+        toggleSortSection.setSelected(false);
 
         RadioButton sortByLikes = new RadioButton("Likes");
         RadioButton sortByPosts = new RadioButton("Shares");
@@ -163,30 +188,34 @@ public class DashboardView {
         grid.add(vbox, 0, 2);
     }
 
-    public void setupTableControlsSection() {
-        GridPane tableControlsGrid = GridUtil.setupNoPaddingGrid();
+    public void setupVipControlSection() {
+        GridPane vipControlsGrid = GridUtil.setupNoPaddingGrid();
 
-        Text tableControlsTitle = new Text("Controls");
-        tableControlsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
-        tableControlsGrid.add(tableControlsTitle, 0, 0, 2, 1);
+        Text vipControlsTitle = new Text("VIP Controls");
+        vipControlsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        vipControlsGrid.add(vipControlsTitle, 0, 0);
 
         addButton.setMinWidth(120);
         refreshButton.setMinWidth(120);
         dataVisualisationButton.setMinWidth(120);
-        exportButton.setMinWidth(120);
-        importButton.setMinWidth(120);
 
-        HBox tableControlsRow1 = new HBox(5, addButton, refreshButton);
-        HBox tableControlsRow2 = new HBox(5, dataVisualisationButton, exportButton);
-        HBox tableControlsRow3 = new HBox(5, importButton);
+        HBox tableControlsRow1 = new HBox(5, importButton, exportButton);
+        HBox tableControlsRow2 = new HBox(5, dataVisualisationButton);
+        HBox tableControlsRow3 = new HBox(5, validationMessage);
 
-        VBox vbox = new VBox(10, tableControlsGrid, tableControlsRow1, tableControlsRow2, tableControlsRow3,
-                new Separator());
+        VBox vbox = new VBox(10, vipControlsGrid, tableControlsRow1, tableControlsRow2, tableControlsRow3);
 
         grid.add(vbox, 0, 3);
     }
 
     public void setupPostsTable() {
+        GridPane tableControlsGrid = GridUtil.setupNoPaddingGrid();
+
+        Text tableControlsTitle = new Text("DATA ANALYTICS HUB");
+        tableControlsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        tableControlsGrid.add(tableControlsTitle, 0, 0, 2, 1);
+
+        HBox tableControls = new HBox(5, addButton, refreshButton);
 
         TableColumn<Post, String> id = new TableColumn<>("Post ID");
         TableColumn<Post, String> content = new TableColumn<>("Content");
@@ -212,7 +241,12 @@ public class DashboardView {
         VBox layout = new VBox(10);
         layout.getChildren().addAll(table);
 
-        grid.add(layout, 2, 1, 10, 4);
+        exportButton.setMinWidth(120);
+        importButton.setMinWidth(120);
+
+        VBox vbox = new VBox(10, tableControlsGrid, tableControls, layout);
+
+        grid.add(vbox, 2, 1, 10, 4);
     }
 
     /**
@@ -237,6 +271,17 @@ public class DashboardView {
         });
     }
 
+    private void setupValidationMessage() {
+
+        HBox validationBox = new HBox(10);
+        validationBox.setAlignment(Pos.CENTER_RIGHT);
+        validationBox.getChildren().add(validationMessage);
+
+        VBox vBox = new VBox(10, validationBox);
+
+        grid.add(vBox, 0, 9, 2, 1);
+    }
+
     /*
      * GETTERS
      */
@@ -248,7 +293,7 @@ public class DashboardView {
         return scene;
     }
 
-    public String getSearchToggleGroup() {
+    public String getSearchToggleGroupValue() {
         return searchToggleGroup.getSelectedToggle().getUserData().toString();
     }
 
@@ -262,6 +307,10 @@ public class DashboardView {
 
     public TextField getSortField() {
         return sortField;
+    }
+
+    public CheckBox getToggleSearchSection() {
+        return toggleSearchSection;
     }
 
     public Button getRefreshButton() {
@@ -304,8 +353,12 @@ public class DashboardView {
         return subscribe;
     }
 
-    public String getSortToggleGroup() {
+    public String getSortToggleGroupValue() {
         return sortToggleGroup.getSelectedToggle().getUserData().toString();
+    }
+
+    public CheckBox getToggleSortSection() {
+        return toggleSortSection;
     }
 
     public Integer getSortValue() {
@@ -314,6 +367,14 @@ public class DashboardView {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    public ToggleGroup getSearchToggleGroup() {
+        return searchToggleGroup;
+    }
+
+    public ToggleGroup getSortToggleGroup() {
+        return sortToggleGroup;
     }
 
     /*
@@ -329,5 +390,9 @@ public class DashboardView {
 
     public void setHeader(String header) {
         this.header.setText(header);
+    }
+
+    public void setValidationMessage(String message) {
+        this.validationMessage.setText(message);
     }
 }
