@@ -8,9 +8,9 @@ public interface Dao<T> {
 
     T get(String id);
 
-    void create(T t);
+    Boolean create(T t);
 
-    void update(T t);
+    Boolean update(T t);
 
-    void delete(T t);
+    Boolean delete(T t);
 }

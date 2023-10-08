@@ -8,6 +8,10 @@ public class User {
     private String password;
     private Boolean isVIP;
 
+    public User() {
+
+    }
+
     public User(String userId, String firstName, String lastName, String username, String password,
             Boolean isVIP) {
         this.userId = userId;
@@ -16,6 +20,30 @@ public class User {
         this.username = username;
         this.password = password;
         this.isVIP = isVIP;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setIsVip(Boolean isVip) {
+        this.isVIP = isVip;
     }
 
     public String getUserId() {

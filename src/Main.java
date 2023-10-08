@@ -1,22 +1,21 @@
 
 import controllers.LoginController;
-import controllers.PostController;
-import controllers.UserController;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import views.LoginView;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage applicationStage) {
-        LoginController loginController = new LoginController();
-        loginController.show();
+    public void start(Stage primaryStage) {
+        LoginView view = new LoginView();
+        LoginController controller = new LoginController(view);
 
-        // PostController postController = new PostController();
-        // postController.show();
+        controller.setPrimaryStage(primaryStage);
 
-        // RegistrationController registrationController = new RegistrationController();
-        // registrationController.show();
+        primaryStage.setTitle("Data Analytics Hub - Login");
+        primaryStage.setScene(view.getScene());
+        primaryStage.show();
     }
 
     public static void main(String[] args) {

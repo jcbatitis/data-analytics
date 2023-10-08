@@ -1,114 +1,82 @@
 package views;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import models.Post;
 import utils.GridUtil;
-import utils.StageUtil;
 
-public class PostView extends Stage {
+public class PostView {
 
-    public GridPane grid;
+    // Layout
+    private GridPane grid;
     private Scene scene;
 
-    private Label postIdLabel;
-    private Label contentLabel;
-    private Label authorLabel;
-    private Label likesLabel;
-    private Label sharesLabel;
-    private Label dateLabel;
+    // Controls
+    private final Text title = new Text();
+    private final Text header = new Text();
+    private final TextField postIdField = new TextField();
+    private final TextField contentField = new TextField();
+    private final TextField authorField = new TextField();
+    private final TextField likesField = new TextField();
+    private final TextField sharesField = new TextField();
+    private final TextField dateTimeField = new TextField();;
 
-    public TextField postIdField;
-    public TextArea contentField;
-    public TextField authorField;
-    public TextField likesField;
-    public TextField sharesField;
-    public TextField dateField;
+    private final Button backButton = new Button("Back To Dashboard");
+    private final Button submitButton = new Button("Submit");
+    private final Button exportButton = new Button("Export");
 
-    public Button backButton = new Button();
-    public Button submitButton = new Button();
-    public Button deleteButton = new Button("Delete");
-    public Button editButton = new Button("Edit");
+    private final Button deleteButton = new Button("Delete");
+    private final Button editButton = new Button("Edit");
 
-    public Text sceneTitle = new Text();
-    public Text validationMessage = new Text();
+    private final Text validationMessage = new Text();
 
-    private BooleanProperty formDisabled = new SimpleBooleanProperty(false);
+    private final BooleanProperty formDisabled = new SimpleBooleanProperty(false);
 
+    /**
+     * INITIALISES VIEW
+     */
     public PostView() {
-        this.setTitle("Data Analytics Hub");
-        this.show();
-
-        formDisabled.addListener((observer, oldValue, disable) -> toggleEditableFields(disable));
-
-        setupDefaults();
+        setupLayout();
+        setupFormListener();
     }
 
-    public BooleanProperty formDisabledProperty() {
-        return formDisabled;
+    /*
+     * FORM LISTENER FOR DISABLING FORM CONTROLS
+     */
+    private void setupFormListener() {
+        formDisabled.addListener((observable, oldValue, newValue) -> toggleEditableFields(newValue));
     }
 
-    public boolean isFormDisabled() {
-        return formDisabled.get();
-    }
-
-    public void disableFormControls(boolean disable) {
-        this.formDisabled.set(disable);
-        this.submitButton.setDisable(disable);
-    }
-
-    private void toggleEditableFields(boolean disable) {
-        postIdField.setDisable(disable);
-        contentField.setDisable(disable);
-        authorField.setDisable(disable);
-        likesField.setDisable(disable);
-        sharesField.setDisable(disable);
-        dateField.setDisable(disable);
-    }
-
-    private void setupDefaults() {
-        StageUtil.centerStage(this);
-
+    /**
+     * SETUP THE LAYOUT FOR THE VIEW
+     */
+    private void setupLayout() {
         grid = GridUtil.setupCenteredGrid();
         scene = new Scene(grid, 700, 500);
-        this.setScene(scene);
 
         setupHeader();
         setupPostDetailControls();
         setupButtons();
     }
 
+    /**
+     * SETUP THE UI CONTROLS
+     */
     private void setupHeader() {
-        sceneTitle.setFont(Font.font("Tahoba", FontWeight.BOLD, 22));
-        grid.add(sceneTitle, 0, 0, 2, 1);
+        header.setFont(Font.font("Tahona", FontWeight.BOLD, 22));
+        grid.add(header, 0, 0, 2, 1);
     }
 
     private void setupPostDetailControls() {
@@ -122,35 +90,36 @@ public class PostView extends Stage {
         postDetailTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
         grid.add(hbox, 0, 1, 2, 1);
 
-        postIdLabel = new Label("Post Id: ");
-        postIdField = new TextField();
-        grid.add(postIdLabel, 0, 2);
-        grid.add(postIdField, 1, 2);
+        // Post Id
+        // Label postIdLabel = new Label("Post Id: ");
 
-        contentLabel = new Label("Content: ");
-        contentField = new TextArea();
+        // grid.add(postIdLabel, 0, 2);
+        // grid.add(postIdField, 1, 2);
+
+        Label contentLabel = new Label("Content: ");
+
         grid.add(contentLabel, 0, 3);
         grid.add(contentField, 1, 3, 1, 2);
 
-        authorLabel = new Label("Author: ");
-        authorField = new TextField();
+        Label authorLabel = new Label("Author: ");
+
         grid.add(authorLabel, 0, 5);
         grid.add(authorField, 1, 5);
 
-        likesLabel = new Label("Likes: ");
-        likesField = new TextField();
+        Label likesLabel = new Label("Likes: ");
+
         grid.add(likesLabel, 0, 6);
         grid.add(likesField, 1, 6);
 
-        sharesLabel = new Label("Shares: ");
-        sharesField = new TextField();
+        Label sharesLabel = new Label("Shares: ");
+
         grid.add(sharesLabel, 0, 7);
         grid.add(sharesField, 1, 7);
 
-        dateLabel = new Label("Date: ");
-        dateField = new TextField();
+        Label dateLabel = new Label("Date: ");
+
         grid.add(dateLabel, 0, 8);
-        grid.add(dateField, 1, 8);
+        grid.add(dateTimeField, 1, 8);
     }
 
     private void setupButtons() {
@@ -161,11 +130,139 @@ public class PostView extends Stage {
         grid.add(bbox, 1, 9);
 
         HBox hBox = new HBox(10);
-        Region region1 = new Region();
-        HBox.setHgrow(region1, Priority.ALWAYS);
+        Region region = new Region();
+        HBox.setHgrow(region, Priority.ALWAYS);
 
-        hBox.getChildren().addAll(backButton, region1, submitButton);
+        hBox.getChildren().addAll(backButton, region, exportButton, submitButton);
         grid.add(hBox, 0, 10, 2, 1);
+    }
+
+    /*
+     * GETTER
+     */
+    public boolean isFormDisabled() {
+        return formDisabled.get();
+    }
+
+    public String getTitle() {
+        return title.getText();
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public String getPostId() {
+        return postIdField.getText();
+    }
+
+    public String getContent() {
+        return contentField.getText();
+    }
+
+    public String getAuthor() {
+        return authorField.getText();
+    }
+
+    public Integer getLikes() {
+        try {
+            return Integer.parseInt(likesField.getText());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public Integer getShares() {
+        try {
+            return Integer.parseInt(sharesField.getText());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public String getDateTime() {
+        return dateTimeField.getText();
+    }
+
+    public Button getBackButton() {
+        return backButton;
+    }
+
+    public Button getEditButton() {
+        return editButton;
+    }
+
+    public Button getDeleteButton() {
+        return deleteButton;
+    }
+
+    public Button getSubmitButton() {
+        return submitButton;
+    }
+
+    public Button getExportButton() {
+        return exportButton;
+    }
+
+    public TextField getLikesField() {
+        return likesField;
+    }
+
+    public TextField getSharesField() {
+        return sharesField;
+    }
+
+    /*
+     * SETTER
+     */
+    public void setTitle(String title) {
+        this.title.setText(title);
+    }
+
+    public void setHeader(String header) {
+        this.header.setText(header);
+    }
+
+    public void disableFormControls(boolean disable) {
+        this.formDisabled.set(disable);
+        this.submitButton.setDisable(disable);
+    }
+
+    public void toggleEditableFields(boolean disable) {
+        postIdField.setDisable(disable);
+        contentField.setDisable(disable);
+        authorField.setDisable(disable);
+        likesField.setDisable(disable);
+        sharesField.setDisable(disable);
+        dateTimeField.setDisable(disable);
+    }
+
+    public void setPostId(String postId) {
+        postIdField.setText(postId);
+    }
+
+    public void setContent(String content) {
+        contentField.setText(content);
+    }
+
+    public void setAuthor(String author) {
+        authorField.setText(author);
+    }
+
+    public void setLikes(Integer likes) {
+        likesField.setText(likes.toString());
+    }
+
+    public void setShares(Integer shares) {
+        sharesField.setText(shares.toString());
+    }
+
+    public void setDateTime(String dateTime) {
+        dateTimeField.setText(dateTime);
+    }
+
+    public void setValidationMessage(String message) {
+        validationMessage.setText(message);
     }
 }
 // public void setPosts(ObservableList<Post> posts) {

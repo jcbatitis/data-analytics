@@ -71,7 +71,7 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public void create(User user) {
+    public Boolean create(User user) {
         String query = "INSERT INTO Users" +
                 " VALUES (?,?,?,?,?,?)";
 
@@ -88,14 +88,19 @@ public class UserDao implements Dao<User> {
             if (result == 1) {
                 System.out.println("Insert into table executed successfully");
                 System.out.println(result + " row(s) affected");
+
+                return true;
             }
+
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
     @Override
-    public void update(User user) {
+    public Boolean update(User user) {
         String query = "UPDATE Users SET " +
                 "user_id = ?," +
                 "first_name = ?," +
@@ -119,14 +124,19 @@ public class UserDao implements Dao<User> {
             if (result == 1) {
                 System.out.println("Update into table executed successfully");
                 System.out.println(result + " row(s) affected");
+
+                return true;
             }
+
+            return null;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
     @Override
-    public void delete(User user) {
+    public Boolean delete(User user) {
         String query = "DELETE FROM Users WHERE user_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -137,9 +147,13 @@ public class UserDao implements Dao<User> {
             if (result == 1) {
                 System.out.println("Deletion from table executed successfully");
                 System.out.println(result + " row(s) affected");
+
+                return true;
             }
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -195,6 +209,31 @@ public class UserDao implements Dao<User> {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public Boolean updateRole(User user) {
+        String query = "UPDATE Users SET " +
+                "is_vip = ?" +
+                "WHERE user_id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setBoolean(1, user.isVIP());
+            statement.setString(2, user.getUserId());
+
+            int result = statement.executeUpdate();
+
+            if (result == 1) {
+                System.out.println("Update into table executed successfully");
+                System.out.println(result + " row(s) affected");
+
+                return true;
+            }
+
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

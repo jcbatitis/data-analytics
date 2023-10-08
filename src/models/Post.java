@@ -10,19 +10,16 @@ public class Post {
     private Integer likes;
     private Integer shares;
     private String dateTime;
-    private String userId;
 
     private final BooleanProperty selected = new SimpleBooleanProperty(false);
 
-    public Post(String id, String content, String author, Integer likes, Integer shares, String dateTime,
-            String userId) {
+    public Post(String id, String content, String author, Integer likes, Integer shares, String dateTime) {
         this.id = id;
         this.content = content;
         this.author = author;
         this.likes = likes;
         this.shares = shares;
         this.dateTime = dateTime;
-        this.userId = userId;
     }
 
     public String getId() {
@@ -47,10 +44,6 @@ public class Post {
 
     public String getDateTime() {
         return dateTime;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public BooleanProperty selectedProperty() {

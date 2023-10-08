@@ -1,14 +1,11 @@
 package views;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,10 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -33,104 +27,89 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.util.Callback;
 import models.Post;
 import utils.GridUtil;
-import utils.StageUtil;
 
-public class DashboardView extends Stage {
+public class DashboardView {
 
-    public GridPane grid;
+    // Layout
+    private GridPane grid;
     private Scene scene;
 
-    public Text sceneTitle = new Text();
+    private final BorderPane root = new BorderPane();
+    private final Text title = new Text();
+    private final Text header = new Text();
+    private final Button clearButton = new Button("Clear");
+    private final Button addButton = new Button("Add New");
+    private final Button refreshButton = new Button("Refresh");
+    private final Button dataVisualisationButton = new Button("Data Visualisation");
+    private final Button exportButton = new Button("Export");
+    private final Button importButton = new Button("Import");
 
-    public Button addButton;
-    public Button deleteButton;
-    public Button refreshButton;
+    private final Button searchSubmitButton = new Button("Search");
+    private final Button sortSubmitButton = new Button("Sort");
+    private final MenuItem editProfile = new MenuItem("Edit Profile");
+    private final MenuItem subscribe = new MenuItem("Subscriptions");
 
-    public TextField searchField;
-    public ToggleGroup searchToggleGroup;
-    public Button searchButton;
-    public Button searchClearButton;
+    private final MenuItem logout = new MenuItem("Log out");
 
-    public TableView<Post> table;
-    public ObservableList<Post> posts = FXCollections.observableArrayList();;
+    private final MenuBar menuBar = new MenuBar();
+    private final Menu profileMenu = new Menu("Profile");
 
-    public MenuItem editProfile = new MenuItem("Edit Profile");
-    public MenuItem subscribe = new MenuItem("Subscribe to VIP program");
+    private final TextField searchField = new TextField();
+    private final TextField sortField = new TextField();
+    private final ToggleGroup searchToggleGroup = new ToggleGroup();
+    private final ToggleGroup sortToggleGroup = new ToggleGroup();
 
-    public Post selectedPost;
+    private final TableView<Post> table = new TableView<Post>();;
+    private final TableColumn<Post, Void> selectColumn = new TableColumn<>("Select");
 
-    TableColumn<Post, Void> selectColumn = new TableColumn<>("Select");
-
+    /**
+     * INITIALISES VIEW
+     */
     public DashboardView() {
-        this.setTitle("Data Analytics Hub");
-        this.show();
-
-        refreshButton = new Button("Refresh");
-        addButton = new Button("Add New");
-        deleteButton = new Button("Delete Selected Posts");
-        searchField = new TextField();
-
-        this.setupDefaults();
+        setupLayout();
     }
 
-    private void setupDefaults() {
-        BorderPane root = new BorderPane();
-
-        StageUtil.centerStage(this);
-        Menu profileMenu = new Menu("Profile");
-
-        profileMenu.getItems().addAll(editProfile, subscribe);
-
-        MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(profileMenu);
-
-        grid = GridUtil.setupCenteredGrid();
+    /**
+     * SETUP THE LAYOUT FOR THE VIEW
+     */
+    private void setupLayout() {
+        grid = GridUtil.setupGrid();
 
         root.setTop(menuBar);
         root.setCenter(grid);
 
-        scene = new Scene(root, 700, 500);
-        this.setScene(scene);
-
+        setupMenu();
         setupHeader();
         setupSearchSection();
-        setupButtons();
+        setupSortSection();
+        setupTableControlsSection();
         setupPostsTable();
+
+        scene = new Scene(root, 900, 500);
+    }
+
+    /**
+     * SETUP THE UI CONTROLS
+     */
+    private void setupMenu() {
+        profileMenu.getItems().addAll(editProfile, subscribe, logout);
+        menuBar.getMenus().addAll(profileMenu);
     }
 
     private void setupHeader() {
-        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.add(sceneTitle, 0, 0);
-    }
-
-    public void setupPosts(ObservableList<Post> posts) {
-        this.posts = posts;
-    }
-
-    public void setupButtons() {
-        HBox hBox = new HBox(10);
-
-        hBox.getChildren().addAll(searchField, addButton, refreshButton, deleteButton);
-        grid.add(hBox, 0, 2, 3, 1);
-
-        Separator separator = new Separator();
-        grid.add(separator, 0, 3, 3, 1);
+        header.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        grid.add(header, 0, 0, 11, 1);
     }
 
     public void setupSearchSection() {
         GridPane searchGrid = GridUtil.setupNoPaddingGrid();
-        searchToggleGroup = new ToggleGroup();
 
-        // Header
         Text searchTitle = new Text("Search");
         searchTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
         searchGrid.add(searchTitle, 0, 0, 2, 1);
 
-        // Radio Button
         RadioButton searchByTerm = new RadioButton("Term");
         RadioButton searchByPostId = new RadioButton("Post ID");
 
@@ -142,18 +121,72 @@ public class DashboardView extends Stage {
         searchByPostId.setToggleGroup(searchToggleGroup);
         searchByPostId.setUserData("postId");
 
-        searchButton = new Button("Search");
-        searchClearButton = new Button("Clear");
-
         HBox hBox = new HBox(10, searchByTerm, searchByPostId);
         searchGrid.add(searchToggleGroupLabel, 0, 1);
         searchGrid.add(hBox, 1, 1);
 
-        grid.add(searchGrid, 0, 1);
+        searchSubmitButton.setMinWidth(80);
+
+        HBox searchControl = new HBox(5, searchField, searchSubmitButton);
+        VBox vbox = new VBox(10, searchGrid, searchControl, new Separator());
+
+        grid.add(vbox, 0, 1);
+    }
+
+    public void setupSortSection() {
+        GridPane sortGrid = GridUtil.setupNoPaddingGrid();
+
+        Text sortTitle = new Text("Sort");
+        sortTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        sortGrid.add(sortTitle, 0, 0, 2, 1);
+
+        RadioButton sortByLikes = new RadioButton("Likes");
+        RadioButton sortByPosts = new RadioButton("Shares");
+
+        Label sortToggleGroupLabel = new Label("Sort by:");
+        sortByLikes.setSelected(true);
+
+        sortByLikes.setToggleGroup(sortToggleGroup);
+        sortByLikes.setUserData("likes");
+        sortByPosts.setToggleGroup(sortToggleGroup);
+        sortByPosts.setUserData("shares");
+
+        sortGrid.add(sortToggleGroupLabel, 0, 1);
+        HBox hBox = new HBox(10, sortByLikes, sortByPosts);
+        sortGrid.add(hBox, 1, 1);
+
+        sortSubmitButton.setMinWidth(80);
+
+        HBox sortControl = new HBox(5, sortField, sortSubmitButton);
+        VBox vbox = new VBox(10, sortGrid, sortControl, new Separator());
+
+        grid.add(vbox, 0, 2);
+    }
+
+    public void setupTableControlsSection() {
+        GridPane tableControlsGrid = GridUtil.setupNoPaddingGrid();
+
+        Text tableControlsTitle = new Text("Controls");
+        tableControlsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        tableControlsGrid.add(tableControlsTitle, 0, 0, 2, 1);
+
+        addButton.setMinWidth(120);
+        refreshButton.setMinWidth(120);
+        dataVisualisationButton.setMinWidth(120);
+        exportButton.setMinWidth(120);
+        importButton.setMinWidth(120);
+
+        HBox tableControlsRow1 = new HBox(5, addButton, refreshButton);
+        HBox tableControlsRow2 = new HBox(5, dataVisualisationButton, exportButton);
+        HBox tableControlsRow3 = new HBox(5, importButton);
+
+        VBox vbox = new VBox(10, tableControlsGrid, tableControlsRow1, tableControlsRow2, tableControlsRow3,
+                new Separator());
+
+        grid.add(vbox, 0, 3);
     }
 
     public void setupPostsTable() {
-        table = new TableView<Post>();
 
         TableColumn<Post, String> id = new TableColumn<>("Post ID");
         TableColumn<Post, String> content = new TableColumn<>("Content");
@@ -161,7 +194,6 @@ public class DashboardView extends Stage {
         TableColumn<Post, Integer> likes = new TableColumn<>("Likes");
         TableColumn<Post, Integer> shares = new TableColumn<>("Shares");
         TableColumn<Post, String> dateTime = new TableColumn<>("Date");
-        TableColumn<Post, String> userId = new TableColumn<>("Added By (User Id)");
 
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         content.setCellValueFactory(new PropertyValueFactory<>("content"));
@@ -169,57 +201,133 @@ public class DashboardView extends Stage {
         likes.setCellValueFactory(new PropertyValueFactory<>("likes"));
         shares.setCellValueFactory(new PropertyValueFactory<>("shares"));
         dateTime.setCellValueFactory(new PropertyValueFactory<>("dateTime"));
-        userId.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
         table.setEditable(true);
 
-        List<TableColumn<Post, ?>> columns = Arrays.asList(selectColumn, id, content, author, likes, shares, dateTime,
-                userId);
+        List<TableColumn<Post, ?>> columns = Arrays.asList(selectColumn, id, content,
+                author, likes, shares, dateTime);
 
         table.getColumns().setAll(columns);
-
-        table.setItems(this.posts);
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(table);
 
-        grid.add(layout, 0, 4, 2, 1);
+        grid.add(layout, 2, 1, 10, 4);
     }
 
-    public void setSelectButtonAction(Consumer<Post> action) {
+    /**
+     * SET UPS THE SELECT BUTTON FOR TABLE ROW
+     */
+    public void setupSelectButtonEventHandler(EventHandler<ActionEvent> event) {
         selectColumn.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Select");
-
-            {
-                btn.setOnAction(event -> {
-                    Post post = getTableView().getItems().get(getIndex());
-                    action.accept(post);
-                });
-            }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    Post currentPost = getTableView().getItems().get(getIndex());
+                    btn.setUserData(currentPost);
+                    btn.setOnAction(event);
+                    setGraphic(btn);
+                }
             }
         });
     }
+
+    /*
+     * GETTERS
+     */
+    public String getTitle() {
+        return title.getText();
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public String getSearchToggleGroup() {
+        return searchToggleGroup.getSelectedToggle().getUserData().toString();
+    }
+
+    public String getSearchTerm() {
+        return searchField.getText();
+    }
+
+    public TextField getSearchField() {
+        return searchField;
+    }
+
+    public TextField getSortField() {
+        return sortField;
+    }
+
+    public Button getRefreshButton() {
+        return refreshButton;
+    }
+
+    public Button getAddButton() {
+        return addButton;
+    }
+
+    public Button getSortButton() {
+        return sortSubmitButton;
+    }
+
+    public Button getSearchButton() {
+        return searchSubmitButton;
+    }
+
+    public Button getDataVisualisationButton() {
+        return dataVisualisationButton;
+    }
+
+    public Button getExportButton() {
+        return exportButton;
+    }
+
+    public Button getImportButton() {
+        return importButton;
+    }
+
+    public MenuItem getEditProfileMenu() {
+        return editProfile;
+    }
+
+    public MenuItem getLogoutMenu() {
+        return logout;
+    }
+
+    public MenuItem getSubscriptionMenu() {
+        return subscribe;
+    }
+
+    public String getSortToggleGroup() {
+        return sortToggleGroup.getSelectedToggle().getUserData().toString();
+    }
+
+    public Integer getSortValue() {
+        try {
+            return Integer.parseInt(sortField.getText());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    /*
+     * SETTERS
+     */
+    public void setTableItems(ObservableList<Post> posts) {
+        table.setItems(posts);
+    }
+
+    public void setTitle(String title) {
+        this.title.setText(title);
+    }
+
+    public void setHeader(String header) {
+        this.header.setText(header);
+    }
 }
-
-// Refresh
-// try {
-// // refreshButton.setPrefSize(50, 50);
-// // FileInputStream input = new
-// // FileInputStream("src/resources/images/refresh.png");
-
-// // Image image = new Image(input);
-// // ImageView imageView = new ImageView(image);
-// // imageView.setPreserveRatio(true);
-
-// // // imageView.fitWidthProperty().bind(refreshButton.widthProperty());
-// // // imageView.fitHeightProperty().bind(refreshButton.heightProperty());
-// // refreshButton.setGraphic(imageView);
-
-// } catch (FileNotFoundException e) {
-// e.printStackTrace();
-// }

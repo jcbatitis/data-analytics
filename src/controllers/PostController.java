@@ -1,99 +1,177 @@
 package controllers;
 
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import models.Post;
 import models.User;
 import services.PostDao;
 import utils.GlobalUtil;
+import utils.UUIDUtil;
+import views.DashboardView;
 import views.PostView;
 
 public class PostController {
+    private Stage primaryStage;
     private PostView view;
-    private PostDao dao;
     private Post post;
     private User user;
+    private final PostDao dao = new PostDao();
 
-    public PostController() {
-        view = new PostView();
-        dao = new PostDao();
+    private Boolean hasPostDetails = false;
 
-        view.sceneTitle.setText("Add New Post");
-        view.backButton.setText("Back to Dashboard");
-        view.submitButton.setText("Save");
+    /**
+     * @param primaryStage sets current primary stage
+     */
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
-    public PostController(String id) {
-        view = new PostView();
-        dao = new PostDao();
+    public PostController(PostView view) {
+        this.view = view;
 
-        view.sceneTitle.setText(String.format("Post #%s", id));
-        view.backButton.setText("Back to Dashboard");
-        view.submitButton.setText("Save");
+        setupEventHandlers();
+    }
+
+    /**
+     * SETUPS EVENT HANDLERS FOR VIEW
+     */
+    public void setupEventHandlers() {
+        view.getExportButton().setOnAction(this::exportHandler);
+        view.getEditButton().setOnAction(this::editHandler);
+        view.getDeleteButton().setOnAction(this::deleteHandler);
+        view.getSubmitButton().setOnAction(this::submitHandler);
+        view.getBackButton().setOnAction(this::backHandler);
+        view.getLikesField().textProperty()
+                .addListener(numericHandler(view.getLikesField()));
+        view.getSharesField().textProperty()
+                .addListener(numericHandler(view.getSharesField()));
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+        this.hasPostDetails = true;
+
+        view.setPostId(post.getId());
+        view.setContent(post.getContent());
+        view.setAuthor(post.getAuthor());
+        view.setLikes(post.getLikes());
+        view.setShares(post.getShares());
+        view.setDateTime(post.getDateTime());
+
         view.disableFormControls(true);
-
-        setPostDetails(id);
+        view.getSubmitButton().setText("Update");
     }
 
-    public void setUserDetails(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public void show() {
-        view.show();
+    public void exportHandler(ActionEvent e) {
+        view.setValidationMessage("");
+        view.getExportButton().setDisable(true);
 
-        view.deleteButton.setOnAction(e -> {
-            dao.delete(post);
+        Boolean job = dao.exportPost(post);
 
-            new DashboardController(user).show();
-            view.close();
-        });
+        if (job) {
+            view.setValidationMessage("Post exported successfully!");
+            view.getExportButton().setDisable(false);
+        } else {
+            view.getExportButton().setDisable(false);
+        }
+    }
 
-        view.backButton.setOnAction(e -> {
-            new DashboardController(user).show();
-            view.close();
-        });
+    /**
+     * BACK HANDLER METHOD
+     * 
+     * @param e event handler variable
+     */
+    public void backHandler(ActionEvent e) {
+        setupDashboardView(user);
+    }
 
-        view.editButton.setOnAction(e -> {
-            view.disableFormControls(false);
-            view.validationMessage.setText("");
-            view.editButton.setDisable(true);
-        });
+    /**
+     * SUBMIT HANDLER METHOD
+     * 
+     * @param event event handler variable
+     */
+    public void submitHandler(ActionEvent e) {
+        try {
+            String content = view.getContent();
+            String author = view.getAuthor();
+            Integer likes = view.getLikes();
+            Integer shares = view.getShares();
+            String dateTime = view.getDateTime();
 
-        view.submitButton.setOnAction(e -> {
-            String id = view.postIdField.getText();
-            String content = view.contentField.getText();
-            String author = view.authorField.getText();
-            Integer likes = !view.likesField.getText().isEmpty() ? Integer.parseInt(view.likesField.getText()) : null;
-            Integer shares = !view.likesField.getText().isEmpty() ? Integer.parseInt(view.sharesField.getText()) : null;
-            String dateTime = view.dateField.getText();
-
-            Object[] fields = { id, content, author, likes, shares, dateTime };
-            view.validationMessage.setText("");
+            Object[] fields = { content, author, likes, shares, dateTime };
+            view.setValidationMessage("");
 
             if (GlobalUtil.hasEmptyField(fields)) {
-                view.validationMessage.setText("All fields must be filled out.");
+                view.setValidationMessage("All fields must be filled out.");
                 return;
             }
 
-            Post tempPost = new Post(id, content, author, likes, shares, dateTime, post.getUserId());
+            String postId = hasPostDetails ? post.getId()
+                    : UUIDUtil.guid();
 
-            if (post != null) {
-                dao.update(tempPost);
-                view.editButton.setDisable(false);
+            Post payload = new Post(postId, content, author, likes, shares, dateTime);
 
-                view.disableFormControls(true);
-                view.validationMessage.setText("Post successfully updated!");
+            if (!hasPostDetails) {
+                Boolean job = dao.create(payload);
+                if (job) {
+                    view.setValidationMessage("Post created successfully!");
+                    setupDashboardView(user);
+                    return;
+                }
+            } else {
+                Boolean job = dao.update(payload);
+                if (job) {
+                    view.setValidationMessage("Post updated successfully!");
+
+                    view.getEditButton().setDisable(false);
+                    view.disableFormControls(true);
+                    return;
+                }
             }
-        });
+
+            view.setValidationMessage("Error!");
+        } catch (NumberFormatException numException) {
+            numException.printStackTrace();
+        }
     }
 
-    public void setPostDetails(String id) {
-        post = dao.get(id);
+    private void deleteHandler(ActionEvent e) {
+        dao.delete(post);
+    }
 
-        view.postIdField.setText(post.getId());
-        view.contentField.setText(post.getContent());
-        view.authorField.setText(post.getAuthor());
-        view.likesField.setText(post.getLikes().toString());
-        view.sharesField.setText(post.getShares().toString());
-        view.dateField.setText(post.getDateTime());
+    private void editHandler(ActionEvent e) {
+        view.disableFormControls(false);
+        view.setValidationMessage("");
+        view.getEditButton().setDisable(true);
+    }
+
+    private ChangeListener<String> numericHandler(TextField textField) {
+        return (observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                textField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        };
+    }
+
+    /**
+     * SETUPS DASHBOARD VIEW
+     * 
+     * @param user set selected user
+     */
+    private void setupDashboardView(User user) {
+        DashboardView view = new DashboardView();
+        DashboardController controller = new DashboardController(view);
+
+        controller.setUser(user);
+        controller.setPrimaryStage(primaryStage);
+
+        primaryStage.setTitle("Data Analytics Hub - Dashboard");
+        primaryStage.setScene(view.getScene());
     }
 }
