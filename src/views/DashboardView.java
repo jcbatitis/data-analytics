@@ -25,8 +25,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -99,7 +97,6 @@ public class DashboardView {
         setupHeader();
         setupSearchSection();
         setupSortSection();
-        setupVipControlSection();
         setupPostsTable();
 
         scene = new Scene(root, 900, 500);
@@ -118,7 +115,7 @@ public class DashboardView {
         grid.add(header, 0, 0, 11, 1);
     }
 
-    public void setupSearchSection() {
+    private void setupSearchSection() {
         GridPane searchGrid = GridUtil.setupNoPaddingGrid();
 
         // Header
@@ -149,12 +146,12 @@ public class DashboardView {
         searchSubmitButton.setMinWidth(80);
 
         HBox searchControl = new HBox(5, searchField, searchSubmitButton);
-        VBox vbox = new VBox(10, searchGrid, searchControl, new Separator());
+        VBox vbox = new VBox(10, searchGrid, searchControl);
 
         grid.add(vbox, 0, 1);
     }
 
-    public void setupSortSection() {
+    private void setupSortSection() {
         GridPane sortGrid = GridUtil.setupNoPaddingGrid();
 
         Text sortTitle = new Text("Sort");
@@ -183,7 +180,7 @@ public class DashboardView {
         sortSubmitButton.setMinWidth(80);
 
         HBox sortControl = new HBox(5, sortField, sortSubmitButton);
-        VBox vbox = new VBox(10, sortGrid, sortControl, new Separator());
+        VBox vbox = new VBox(10, new Separator(), sortGrid, sortControl);
 
         grid.add(vbox, 0, 2);
     }
@@ -201,14 +198,13 @@ public class DashboardView {
 
         HBox tableControlsRow1 = new HBox(5, importButton, exportButton);
         HBox tableControlsRow2 = new HBox(5, dataVisualisationButton);
-        HBox tableControlsRow3 = new HBox(5, validationMessage);
 
-        VBox vbox = new VBox(10, vipControlsGrid, tableControlsRow1, tableControlsRow2, tableControlsRow3);
+        VBox vbox = new VBox(10, new Separator(), vipControlsGrid, tableControlsRow1, tableControlsRow2);
 
         grid.add(vbox, 0, 3);
     }
 
-    public void setupPostsTable() {
+    private void setupPostsTable() {
         GridPane tableControlsGrid = GridUtil.setupNoPaddingGrid();
 
         Text tableControlsTitle = new Text("DATA ANALYTICS HUB");
@@ -238,13 +234,17 @@ public class DashboardView {
 
         table.getColumns().setAll(columns);
 
-        VBox layout = new VBox(10);
-        layout.getChildren().addAll(table);
+        VBox tableBox = new VBox(10);
+        tableBox.getChildren().addAll(table);
 
         exportButton.setMinWidth(120);
         importButton.setMinWidth(120);
 
-        VBox vbox = new VBox(10, tableControlsGrid, tableControls, layout);
+        HBox validationBox = new HBox(10);
+        validationBox.setAlignment(Pos.CENTER_RIGHT);
+        validationBox.getChildren().add(validationMessage);
+
+        VBox vbox = new VBox(10, tableControls, tableBox, validationBox);
 
         grid.add(vbox, 2, 1, 10, 4);
     }
@@ -269,17 +269,6 @@ public class DashboardView {
                 }
             }
         });
-    }
-
-    private void setupValidationMessage() {
-
-        HBox validationBox = new HBox(10);
-        validationBox.setAlignment(Pos.CENTER_RIGHT);
-        validationBox.getChildren().add(validationMessage);
-
-        VBox vBox = new VBox(10, validationBox);
-
-        grid.add(vBox, 0, 9, 2, 1);
     }
 
     /*

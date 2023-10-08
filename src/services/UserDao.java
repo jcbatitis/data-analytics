@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import exceptions.EntityAlreadyExistsException;
+import exceptions.EntityNotFoundException;
+
 import models.User;
 import utils.DatabaseUtil;
 
@@ -45,7 +48,7 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public User get(String userId) {
+    public User get(String userId) throws EntityNotFoundException {
         String query = "SELECT * FROM Users WHERE userId = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -61,8 +64,11 @@ public class UserDao implements Dao<User> {
                     String password = resultSet.getString("password");
                     Boolean is_vip = resultSet.getBoolean("is_vip");
                     return new User(id, first_name, last_name, username, password, is_vip);
+                } else {
+                    throw new EntityNotFoundException(
+                            String.format("[Error] Failed to get user as USER ID: %s does not exist", userId));
                 }
-                return null;
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,7 +77,18 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public Boolean create(User user) {
+    public Boolean create(User user)
+            throws EntityAlreadyExistsException {
+
+        for (User existingUser : getAll()) {
+            String userId = user.getUserId();
+
+            if (existingUser.getUserId().equals(userId)) {
+                throw new EntityAlreadyExistsException(
+                        String.format("[Error] Failed to insert user as USER ID: %s already exists", userId));
+            }
+        }
+
         String query = "INSERT INTO Users" +
                 " VALUES (?,?,?,?,?,?)";
 
@@ -100,7 +117,8 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public Boolean update(User user) {
+    public Boolean update(User user)
+            throws EntityNotFoundException {
         String query = "UPDATE Users SET " +
                 "user_id = ?," +
                 "first_name = ?," +
@@ -126,9 +144,10 @@ public class UserDao implements Dao<User> {
                 System.out.println(result + " row(s) affected");
 
                 return true;
+            } else {
+                throw new EntityNotFoundException(
+                        String.format("[Error] Failed to update user as USER ID: %s does not exist", user.getUserId()));
             }
-
-            return null;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -136,7 +155,7 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public Boolean delete(User user) {
+    public Boolean delete(User user) throws EntityNotFoundException {
         String query = "DELETE FROM Users WHERE user_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -149,27 +168,40 @@ public class UserDao implements Dao<User> {
                 System.out.println(result + " row(s) affected");
 
                 return true;
+            } else {
+                throw new EntityNotFoundException(
+                        String.format("[Error] Failed to delete user as USER ID: %s does not exist", user.getUserId()));
             }
-            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean checkUserIfValid(String username, String password) {
+    public User checkUserIfValid(String entereredUsername, String enteredPassword) throws EntityNotFoundException {
         String query = "SELECT * FROM Users where username = ? AND password = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username);
-            statement.setString(2, password);
+            statement.setString(1, entereredUsername);
+            statement.setString(2, enteredPassword);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next();
+                if (resultSet.next()) {
+                    String id = resultSet.getString("user_id");
+                    String first_name = resultSet.getString("first_name");
+                    String last_name = resultSet.getString("last_name");
+                    String username = resultSet.getString("username");
+                    String password = resultSet.getString("password");
+                    Boolean is_vip = resultSet.getBoolean("is_vip");
+                    return new User(id, first_name, last_name, username, password, is_vip);
+                } else {
+                    throw new EntityNotFoundException(
+                            String.format("[Error] Username or password is incorrect"));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
@@ -187,32 +219,7 @@ public class UserDao implements Dao<User> {
         }
     }
 
-    public User getUserByUsername(String selectedUsername) {
-        String query = "SELECT * FROM Users WHERE username = ?";
-
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, selectedUsername);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-
-                if (resultSet.next()) {
-                    String id = resultSet.getString("user_id");
-                    String first_name = resultSet.getString("first_name");
-                    String last_name = resultSet.getString("last_name");
-                    String username = resultSet.getString("username");
-                    String password = resultSet.getString("password");
-                    Boolean is_vip = resultSet.getBoolean("is_vip");
-                    return new User(id, first_name, last_name, username, password, is_vip);
-                }
-                return null;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public Boolean updateRole(User user) {
+    public Boolean updateRole(User user) throws EntityNotFoundException {
         String query = "UPDATE Users SET " +
                 "is_vip = ?" +
                 "WHERE user_id = ?";
@@ -224,13 +231,11 @@ public class UserDao implements Dao<User> {
             int result = statement.executeUpdate();
 
             if (result == 1) {
-                System.out.println("Update into table executed successfully");
-                System.out.println(result + " row(s) affected");
-
                 return true;
+            } else {
+                throw new EntityNotFoundException(
+                        String.format("[Error] Failed to update user as USER ID: %s does not exist", user.getUserId()));
             }
-
-            return null;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

@@ -6,6 +6,8 @@ public class User {
     private String lastName;
     private String username;
     private String password;
+    private String confirmPassword;
+
     private Boolean isVIP;
 
     public User() {
@@ -46,6 +48,10 @@ public class User {
         this.isVIP = isVip;
     }
 
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -72,5 +78,9 @@ public class User {
 
     public Boolean isVIP() {
         return isVIP;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 }

@@ -17,7 +17,7 @@ public class CreateUsersTable {
                     + "username TEXT NOT NULL,"
                     + "password TEXT NOT NULL,"
                     + "is_vip INT NOT NULL,"
-                    + "PRIMARY KEY (user_id))");
+                    + "PRIMARY KEY (username))");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

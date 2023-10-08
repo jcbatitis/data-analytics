@@ -1,5 +1,8 @@
 package controllers;
 
+import exceptions.EntityAlreadyExistsException;
+import exceptions.EntityNotFoundException;
+import exceptions.InvalidFormSubmissionException;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import models.User;
@@ -61,7 +64,7 @@ public class UserController {
 
         view.getBackButton().setText("Back to Dashboard");
         view.getSubmitButton().setText("Update");
-        view.getUsernameField().setDisable(true);
+        // view.getUsernameField().setDisable(true);
         view.getVipGrid().setVisible(true);
     }
 
@@ -88,65 +91,95 @@ public class UserController {
      * 
      * @param event event handler variable
      */
-    private void submitHandler(ActionEvent e) {
-        String firstName = view.getFirstName();
-        String lastName = view.getLastName();
-        String username = view.getUsername();
-        String password = view.getPassword();
-        String confirmPassword = view.getConfirmPassword();
-        Boolean isVip = view.getVipField();
+    private void submitHandler(ActionEvent event) {
+        try {
+            String firstName = view.getFirstName();
+            String lastName = view.getLastName();
+            String username = view.getUsername();
+            String password = view.getPassword();
+            String confirmPassword = view.getConfirmPassword();
+            Boolean isVip = view.getVipField();
 
-        Boolean isExisting = dao.checkUserIfExisting(username);
+            Boolean isExisting = dao.checkUserIfExisting(username);
 
-        String[] fields = { firstName, lastName, username, password, confirmPassword
-        };
+            String[] fields = { firstName, lastName, username, password, confirmPassword
+            };
 
-        view.setValidationMessage("");
+            GlobalUtil.validateFormControls(fields);
+            view.setValidationMessage("");
 
-        if (GlobalUtil.hasEmptyField(fields)) {
-            view.setValidationMessage("All fields must be filled out.");
-            return;
-        }
-
-        if (isExisting && !hasLoggedUser) {
-            view.setValidationMessage("Please use a different username.");
-            return;
-        }
-
-        if (!password.equals(confirmPassword)) {
-            view.setValidationMessage("Password and confirm password is not the same.");
-            return;
-        }
-
-        String userId = hasLoggedUser ? user.getUserId()
-                : UUIDUtil.guid();
-
-        User userDetail = new User(userId, firstName, lastName, username, password,
-                isVip);
-
-        if (!hasLoggedUser) {
-            Boolean job = dao.create(userDetail);
-            if (job) {
-                setupDashboardView(userDetail);
-                user = userDetail;
-            } else {
-                view.setValidationMessage("Error creating this user.");
+            if (isExisting && !hasLoggedUser) {
+                view.setValidationMessage("Username taken, please use a different username.");
+                return;
             }
-        } else {
-            Boolean job = dao.update(userDetail);
+
+            if (isExisting && !username.equals(user.getUsername())) {
+                view.setValidationMessage("Username taken, please use a different username.");
+                return;
+            }
+
+            if (!password.equals(confirmPassword)) {
+                view.setValidationMessage("Password and confirm password is not the same.");
+                return;
+            }
+
+            String userId = hasLoggedUser ? user.getUserId()
+                    : UUIDUtil.guid();
+
+            User userPayload = new User(userId, firstName, lastName, username, password,
+                    isVip);
+
+            userPayload.setConfirmPassword(confirmPassword);
+
+            if (!hasLoggedUser) {
+                createUser(userPayload);
+            } else {
+                updateUser(userPayload);
+            }
+        } catch (InvalidFormSubmissionException e) {
+            view.setValidationMessage(e.getMessage());
+        }
+    }
+
+    /**
+     * CREATES USER
+     * 
+     * @param payload object user to be created
+     */
+    private void createUser(User payload) {
+        try {
+            Boolean job = dao.create(payload);
+
+            if (job) {
+                setupDashboardView(payload);
+                this.user = payload;
+            }
+        } catch (EntityAlreadyExistsException e) {
+            view.setValidationMessage(e.getMessage());
+        }
+    }
+
+    /**
+     * UPDATES USER
+     * 
+     * @param payload object user to be updated
+     */
+    private void updateUser(User payload) {
+        try {
+            Boolean job = dao.update(payload);
             if (job) {
                 view.setValidationMessage("User details updated successfully");
-                user = userDetail;
-            } else {
-                view.setValidationMessage("Error updating this user.");
+                this.user = payload;
             }
+        } catch (EntityNotFoundException e) {
+            view.setValidationMessage(e.getMessage());
         }
     }
 
     /**
      * SETUPS DASHBOARD VIEW
      * 
-     * @param user set selected user
+     * @param user set selected user for the dashboarv iew
      */
     private void setupDashboardView(User user) {
         DashboardView view = new DashboardView();

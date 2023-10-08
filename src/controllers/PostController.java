@@ -1,15 +1,24 @@
 package controllers;
 
-import javafx.beans.value.ChangeListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import exceptions.CustomDateTimeParseException;
+import exceptions.EntityAlreadyExistsException;
+import exceptions.EntityNotFoundException;
+import exceptions.FilePathRequiredException;
+import exceptions.InvalidFormSubmissionException;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import models.Post;
 import models.User;
 import services.PostDao;
+import utils.FileReaderUtil;
 import utils.GlobalUtil;
 import utils.UUIDUtil;
-import utils.ValidatorUtil;
 import views.DashboardView;
 import views.PostView;
 
@@ -69,16 +78,32 @@ public class PostController {
         this.user = user;
     }
 
-    public void exportHandler(ActionEvent e) {
-        view.setValidationMessage("");
-        view.getExportButton().setDisable(true);
+    public void exportHandler(ActionEvent event) {
+        try {
+            view.setValidationMessage("");
+            view.getExportButton().setDisable(true);
 
-        Boolean job = dao.exportPost(post);
+            File selectedFile = FileReaderUtil.getDirectoryForSaving();
+            String filePath = selectedFile.getAbsolutePath();
+            try (FileWriter writer = new FileWriter(filePath)) {
 
-        if (job) {
-            view.setValidationMessage("Post exported successfully!");
-            view.getExportButton().setDisable(false);
-        } else {
+                writer.append("Id,Content,Author,Likes,Shares,Date\n");
+
+                writer.append(post.getId() + ",");
+                writer.append(post.getContent() + ",");
+                writer.append(post.getAuthor() + ",");
+                writer.append(post.getLikes() + ",");
+                writer.append(post.getShares() + ",");
+                writer.append(post.getDateTime() + "\n");
+
+                view.setValidationMessage("File exported successfully!");
+
+            } catch (IOException e) {
+                view.setValidationMessage(e.getMessage());
+            }
+        } catch (FilePathRequiredException e) {
+            view.setValidationMessage(e.getMessage());
+        } finally {
             view.getExportButton().setDisable(false);
         }
     }
@@ -89,7 +114,8 @@ public class PostController {
      * @param e event handler variable
      */
     public void backHandler(ActionEvent e) {
-        setupDashboardView(user);
+        DashboardView view = new DashboardView();
+        setupDashboardView(view, user);
     }
 
     /**
@@ -97,7 +123,7 @@ public class PostController {
      * 
      * @param event event handler variable
      */
-    public void submitHandler(ActionEvent e) {
+    public void submitHandler(ActionEvent event) {
         try {
             String content = view.getContent();
             String author = view.getAuthor();
@@ -106,49 +132,78 @@ public class PostController {
             String dateTime = view.getDateTime();
 
             Object[] fields = { content, author, likes, shares, dateTime };
+
             view.setValidationMessage("");
 
-            if (GlobalUtil.hasEmptyField(fields)) {
-                view.setValidationMessage("All fields must be filled out.");
-                return;
-            }
-
-            if (!ValidatorUtil.isValidDate(dateTime)) {
-                view.setValidationMessage("Invalid date format.");
-                return;
-            }
+            GlobalUtil.validateFormControls(fields);
+            GlobalUtil.validateDateControl(dateTime);
 
             String postId = hasPostDetails ? post.getId()
                     : UUIDUtil.guid();
 
-            Post payload = new Post(postId, content, author, likes, shares, dateTime);
+            Post postPayload = new Post(postId, content, author, likes, shares, dateTime);
 
             if (!hasPostDetails) {
-                Boolean job = dao.create(payload);
-                if (job) {
-                    view.setValidationMessage("Post created successfully!");
-                    setupDashboardView(user);
-                    return;
-                }
+                createPost(postPayload);
             } else {
-                Boolean job = dao.update(payload);
-                if (job) {
-                    view.setValidationMessage("Post updated successfully!");
-
-                    view.getEditButton().setDisable(false);
-                    view.disableFormControls(true);
-                    return;
-                }
+                updatePost(postPayload);
             }
-
-            view.setValidationMessage("Error!");
-        } catch (NumberFormatException numException) {
-            numException.printStackTrace();
+        } catch (InvalidFormSubmissionException e) {
+            view.setValidationMessage(e.getMessage());
+        } catch (CustomDateTimeParseException e) {
+            view.setValidationMessage(e.getMessage());
         }
     }
 
-    private void deleteHandler(ActionEvent e) {
-        dao.delete(post);
+    /**
+     * CREATES POST
+     * 
+     * @param payload object user to be created
+     */
+    private void createPost(Post payload) {
+        try {
+            Boolean job = dao.create(payload);
+
+            if (job) {
+
+                DashboardView view = new DashboardView();
+                view.setValidationMessage("Post created successfully.");
+
+                setupDashboardView(view, user);
+            }
+        } catch (EntityAlreadyExistsException e) {
+            view.setValidationMessage(e.getMessage());
+        }
+    }
+
+    /**
+     * UPDATES POST
+     * 
+     * @param payload object user to be updated
+     */
+    private void updatePost(Post payload) {
+        try {
+            Boolean job = dao.update(payload);
+            if (job) {
+                view.setValidationMessage("Post updated successfully!");
+            }
+        } catch (EntityNotFoundException e) {
+            view.setValidationMessage(e.getMessage());
+        }
+    }
+
+    private void deleteHandler(ActionEvent event) {
+        try {
+            Boolean job = dao.delete(post);
+            if (job) {
+                DashboardView view = new DashboardView();
+                view.setValidationMessage("Post deleted successfully.");
+
+                setupDashboardView(view, user);
+            }
+        } catch (EntityNotFoundException e) {
+            view.setValidationMessage(e.getMessage());
+        }
     }
 
     private void editHandler(ActionEvent e) {
@@ -162,8 +217,7 @@ public class PostController {
      * 
      * @param user set selected user
      */
-    private void setupDashboardView(User user) {
-        DashboardView view = new DashboardView();
+    private void setupDashboardView(DashboardView view, User user) {
         DashboardController controller = new DashboardController(view);
 
         controller.setUser(user);

@@ -12,10 +12,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import exceptions.EntityAlreadyExistsException;
+import exceptions.EntityNotFoundException;
 import javafx.collections.ObservableList;
 import javafx.stage.FileChooser;
 import models.Post;
-import utils.ContentUtil;
 import utils.DatabaseUtil;
 
 public class PostDao implements Dao<Post> {
@@ -53,7 +54,7 @@ public class PostDao implements Dao<Post> {
     }
 
     @Override
-    public Post get(String postId) {
+    public Post get(String postId) throws EntityNotFoundException {
         String query = "SELECT * FROM Posts " +
                 "WHERE id = ?";
 
@@ -70,9 +71,10 @@ public class PostDao implements Dao<Post> {
                     String date = resultSet.getString("date_time");
 
                     return new Post(id, content, author, likes, shares, date);
+                } else {
+                    throw new EntityNotFoundException(
+                            String.format("[Error] Failed to get post as POST ID: %s does not exist", postId));
                 }
-
-                return null;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -81,7 +83,17 @@ public class PostDao implements Dao<Post> {
     }
 
     @Override
-    public Boolean create(Post post) {
+    public Boolean create(Post post)
+            throws EntityAlreadyExistsException {
+
+        for (Post existingPost : getAll()) {
+            String postId = post.getId();
+
+            if (existingPost.getId().equals(postId)) {
+                throw new EntityAlreadyExistsException(
+                        String.format("[Error] Failed to insert post as POST ID: %s already exists", postId));
+            }
+        }
         String query = "INSERT INTO Posts" +
                 " VALUES (?,?,?,?,?,?)";
 
@@ -110,7 +122,7 @@ public class PostDao implements Dao<Post> {
     }
 
     @Override
-    public Boolean update(Post post) {
+    public Boolean update(Post post) throws EntityNotFoundException {
         String query = "UPDATE Posts SET " +
                 "content = ?," +
                 "author = ?," +
@@ -135,8 +147,10 @@ public class PostDao implements Dao<Post> {
                 System.out.println(result + " row(s) affected");
 
                 return true;
+            } else {
+                throw new EntityNotFoundException(
+                        String.format("[Error] Failed to update postser as POST ID: %s does not exist", post.getId()));
             }
-            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -144,7 +158,7 @@ public class PostDao implements Dao<Post> {
     }
 
     @Override
-    public Boolean delete(Post post) {
+    public Boolean delete(Post post) throws EntityNotFoundException {
         String query = "DELETE FROM Posts WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -157,8 +171,10 @@ public class PostDao implements Dao<Post> {
                 System.out.println(result + " row(s) affected");
 
                 return true;
+            } else {
+                throw new EntityNotFoundException(
+                        String.format("[Error] Failed to delete post as POST ID: %s does not exist", post.getId()));
             }
-            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -227,123 +243,6 @@ public class PostDao implements Dao<Post> {
         } catch (SQLException e) {
             e.printStackTrace();
             return postList;
-        }
-    }
-
-    public Boolean exportPost(Post post) {
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Post");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-        fileChooser.setInitialFileName("post.csv");
-
-        File selectedFile = fileChooser.showSaveDialog(null);
-        if (selectedFile == null) {
-            return false;
-        }
-
-        String filePath = selectedFile.getAbsolutePath();
-        try (FileWriter writer = new FileWriter(filePath)) {
-
-            writer.append("Id,Content,Author,Likes,Shares,Date\n");
-
-            writer.append(post.getId() + ",");
-            writer.append(post.getContent() + ",");
-            writer.append(post.getAuthor() + ",");
-            writer.append(post.getLikes() + ",");
-            writer.append(post.getShares() + ",");
-            writer.append(post.getDateTime() + "\n");
-
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public Boolean exportAll(ObservableList<Post> posts) {
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Post");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-        fileChooser.setInitialFileName("post.csv");
-
-        File selectedFile = fileChooser.showSaveDialog(null);
-        if (selectedFile == null) {
-            return false;
-        }
-
-        String filePath = selectedFile.getAbsolutePath();
-        try (FileWriter writer = new FileWriter(filePath)) {
-
-            writer.append("Id,Content,Author,Likes,Shares,Date\n");
-            for (Post post : posts) {
-                String content = ContentUtil.format(post.getContent());
-
-                writer.append(post.getId() + ",");
-                writer.append(post.getContent() + ",");
-                writer.append(post.getAuthor() + ",");
-                writer.append(post.getLikes() + ",");
-                writer.append(post.getShares() + ",");
-                writer.append(post.getDateTime() + "\n");
-            }
-
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public Boolean importAll() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Import Post");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-
-        File selectedFile = fileChooser.showOpenDialog(null);
-        if (selectedFile == null) {
-            return false;
-        }
-
-        String filePath = selectedFile.getAbsolutePath();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-
-            // Skip header
-            br.readLine();
-
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",", -1);
-
-                if (data.length == 6) {
-
-                    String id = data[0];
-                    String content = data[1];
-                    String author = data[2];
-                    int likes = Integer.parseInt(data[3]);
-                    int shares = Integer.parseInt(data[4]);
-                    String date = data[5];
-
-                    Post post = new Post(id, content, author, likes, shares, date);
-
-                    if (!create(post)) {
-                        System.err.println("Failed to insert post with ID: " + post.getId());
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        } catch (NumberFormatException e) {
-            System.out.println("Error parsing integer");
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
         }
     }
 }

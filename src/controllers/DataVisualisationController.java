@@ -8,18 +8,13 @@ import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import models.Post;
 import models.User;
-import services.UserDao;
 import views.DashboardView;
 import views.DataVisualisationView;
-import views.SubscriptionView;
 
 public class DataVisualisationController {
     private Stage primaryStage;
     private DataVisualisationView view;
     private User user;
-    private ObservableList<Post> posts;
-
-    private final UserDao dao = new UserDao();
 
     /**
      * @param primaryStage sets current primary stage

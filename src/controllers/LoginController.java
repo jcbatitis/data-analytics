@@ -1,6 +1,8 @@
 
 package controllers;
 
+import exceptions.InvalidFormSubmissionException;
+import exceptions.EntityNotFoundException;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import models.User;
@@ -34,7 +36,7 @@ public class LoginController {
         view.getRegisterButton().setOnAction(this::registerHandler);
 
         view.setUsername("ruff");
-        view.setPassword("1234");
+        view.setPassword("ruff");
 
     }
 
@@ -60,19 +62,18 @@ public class LoginController {
      * 
      * @param event event handler variable
      */
-    private void submitHandler(ActionEvent e) {
-        String username = view.getUsername();
-        String password = view.getPassword();
+    private void submitHandler(ActionEvent event) {
+        try {
 
-        String[] fields = { username, password };
+            String username = view.getUsername();
+            String password = view.getPassword();
 
-        if (GlobalUtil.hasEmptyField(fields)) {
-            view.setValidationMessage("All fields must be filled out.");
-            return;
-        }
+            String[] fields = { username, password };
 
-        if (dao.checkUserIfValid(username, password)) {
-            User user = dao.getUserByUsername(username);
+            view.setValidationMessage("");
+            GlobalUtil.validateFormControls(fields);
+
+            User user = dao.checkUserIfValid(username, password);
 
             DashboardView view = new DashboardView();
             DashboardController controller = new DashboardController(view);
@@ -85,8 +86,10 @@ public class LoginController {
             primaryStage.setTitle(view.getTitle());
             primaryStage.setScene(view.getScene());
 
-        } else {
-            view.setValidationMessage("Username or password is incorrect.");
+        } catch (InvalidFormSubmissionException e) {
+            view.setValidationMessage(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            view.setValidationMessage(e.getMessage());
         }
     }
 

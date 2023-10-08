@@ -1,23 +1,28 @@
 package controllers;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.swing.Action;
-
+import exceptions.EntityAlreadyExistsException;
+import exceptions.FilePathRequiredException;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import models.Post;
 import models.User;
 import services.PostDao;
+import utils.FileReaderUtil;
 import utils.GlobalUtil;
 import views.DashboardView;
 import views.DataVisualisationView;
@@ -61,6 +66,10 @@ public class DashboardController {
 
         String welcomeMessage = String.format("Welcome %s!", user.getFullName());
         view.setHeader(welcomeMessage);
+
+        if (this.user.isVIP()) {
+            view.setupVipControlSection();
+        }
     }
 
     /**
@@ -178,6 +187,7 @@ public class DashboardController {
         view.setHeader("Add New Post");
         view.getEditButton().setVisible(false);
         view.getDeleteButton().setVisible(false);
+        view.getExportButton().setVisible(false);
 
         controller.setUser(user);
         controller.setPrimaryStage(primaryStage);
@@ -267,42 +277,85 @@ public class DashboardController {
         primaryStage.show();
     }
 
-    private void exportHandler(ActionEvent e) {
-        String message = "";
-        ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
-        view.getExportButton().setDisable(true);
+    private void exportHandler(ActionEvent error) {
+        try {
+            ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
+            view.getExportButton().setDisable(true);
 
-        Boolean job = dao.exportAll(posts);
+            File selectedFile = FileReaderUtil.getDirectoryForSaving();
+            String filePath = selectedFile.getAbsolutePath();
+            try (FileWriter writer = new FileWriter(filePath)) {
 
-        if (job) {
+                writer.append("Id,Content,Author,Likes,Shares,Date\n");
+
+                for (Post post : posts) {
+                    writer.append(post.getId() + ",");
+                    writer.append(post.getContent() + ",");
+                    writer.append(post.getAuthor() + ",");
+                    writer.append(post.getLikes() + ",");
+                    writer.append(post.getShares() + ",");
+                    writer.append(post.getDateTime() + "\n");
+                }
+
+                view.setValidationMessage("File exported successfully!");
+
+            } catch (IOException e) {
+                view.setValidationMessage(e.getMessage());
+            }
+        } catch (FilePathRequiredException e) {
+            view.setValidationMessage(e.getMessage());
+        } finally {
             view.getExportButton().setDisable(false);
-            message = "Posts exported successfully!";
-        } else {
-            view.getExportButton().setDisable(false);
-            message = "Error exporting posts";
         }
-
-        view.setValidationMessage(message);
     }
 
-    private void importHandler(ActionEvent e) {
-        String message = "";
+    private void importHandler(ActionEvent event) {
+        try {
+            view.getImportButton().setDisable(true);
+            File selectedFile = FileReaderUtil.readFile();
+            String filePath = selectedFile.getAbsolutePath();
 
-        view.getImportButton().setDisable(true);
-        Boolean job = dao.importAll();
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
-        if (job) {
+                String line;
+                br.readLine();
+
+                while ((line = br.readLine()) != null) {
+                    String[] data = line.split(",", -1);
+
+                    if (data.length == 6) {
+
+                        String id = data[0];
+                        String content = data[1];
+                        String author = data[2];
+                        int likes = Integer.parseInt(data[3]);
+                        int shares = Integer.parseInt(data[4]);
+                        String date = data[5];
+
+                        Post post = new Post(id, content, author, likes, shares, date);
+
+                        if (!dao.create(post)) {
+                            System.err.println("Failed to insert post with ID: " + post.getId());
+                        }
+                    }
+                }
+
+                view.setValidationMessage("File imported successfully!");
+
+            } catch (IOException e) {
+                view.setValidationMessage(e.getMessage());
+            } catch (EntityAlreadyExistsException e) {
+                view.setValidationMessage(e.getMessage());
+            } finally {
+                ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
+                setTableItems(posts);
+            }
+
+        } catch (FilePathRequiredException e) {
+            view.setValidationMessage(e.getMessage());
+        } finally {
             view.getImportButton().setDisable(false);
-            ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
-            setTableItems(posts);
-            message = "Posts imported successfully!";
-
-        } else {
-            view.getImportButton().setDisable(false);
-            message = "Error importing posts";
         }
-        view.setValidationMessage(message);
-
     }
 
     private void toggleSearchSectionHandler() {

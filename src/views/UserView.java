@@ -49,6 +49,9 @@ public class UserView {
         setupLayout();
     }
 
+    /**
+     * SETUP THE LAYOUT FOR THE VIEW
+     */
     private void setupLayout() {
         grid = GridUtil.setupCenteredGrid();
         scene = new Scene(grid, 600, 600);
@@ -109,7 +112,6 @@ public class UserView {
     }
 
     private void setupButtons() {
-
         HBox validationBox = new HBox(10);
         validationBox.setAlignment(Pos.CENTER_RIGHT);
         validationBox.getChildren().add(validationMessage);

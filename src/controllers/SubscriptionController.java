@@ -1,5 +1,6 @@
 package controllers;
 
+import exceptions.EntityNotFoundException;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
 import models.User;
@@ -63,24 +64,35 @@ public class SubscriptionController {
      * @param event event handler variable
      */
     private void submitHandler(ActionEvent e) {
-
         Boolean isVIP = view.getVipToggleGroupValue();
         user.setIsVip(isVIP);
 
-        Boolean job = dao.updateRole(user);
-        if (job) {
+        updateUser(user);
+    }
 
-            String backLabel = isVIP ? "Logout" : "Back";
-            String message = isVIP
-                    ? "Subscription approved! Please log out\n and log in again to access VIP functionalities."
-                    : "Subscription sucessfully cancelled.";
-            view.setValidationMessage(message);
-            view.getBackButton().setText(backLabel);
-            view.getSubmitButton().setDisable(true);
+    private void updateUser(User payload) {
+        try {
+            Boolean isVIP = view.getVipToggleGroupValue();
+            payload.setIsVip(isVIP);
 
-            enforceLogout = isVIP;
-        } else {
-            view.setValidationMessage("Error updating this user.");
+            Boolean job = dao.updateRole(payload);
+            if (job) {
+                String backLabel = payload.isVIP() ? "Logout" : "Back";
+                String message = payload.isVIP()
+                        ? "Subscription approved! Please log out\n and log in again to access VIP functionalities."
+                        : "Subscription sucessfully cancelled.";
+
+                view.setValidationMessage(message);
+                this.user = payload;
+
+                view.setValidationMessage(message);
+                view.getBackButton().setText(backLabel);
+                view.getSubmitButton().setDisable(true);
+
+                enforceLogout = isVIP;
+            }
+        } catch (EntityNotFoundException e) {
+            view.setValidationMessage(e.getMessage());
         }
     }
 

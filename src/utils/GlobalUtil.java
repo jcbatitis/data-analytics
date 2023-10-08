@@ -1,21 +1,38 @@
 package utils;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import exceptions.CustomDateTimeParseException;
+import exceptions.InvalidFormSubmissionException;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public final class GlobalUtil {
-    public static boolean hasEmptyField(Object[] params) {
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+    public static Boolean validateFormControls(Object[] params) throws InvalidFormSubmissionException {
         for (Object param : params) {
-            if (param == null) {
-                return true;
-            }
-            if (param instanceof String && ((String) param).trim().isEmpty()) {
-                return true;
+            if (param == null || param instanceof String && ((String) param).trim().isEmpty()) {
+                throw new InvalidFormSubmissionException(
+                        String.format("[Error] All fields must be filled out."));
             }
         }
         return false;
+    }
+
+    public static String validateDateControl(String dateString) throws CustomDateTimeParseException {
+        try {
+            LocalDateTime.parse(dateString, DATE_FORMATTER);
+            return dateString;
+        } catch (DateTimeParseException e) {
+            throw new CustomDateTimeParseException(
+                    String.format("[Error] Invalid date format. Format: %s", "dd/MM/yyyy HH:mm"));
+        }
     }
 
     public static Font getHeaderFont() {
