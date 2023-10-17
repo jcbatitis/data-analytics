@@ -1,0 +1,146 @@
+/* Background */
+.root {
+    -fx-background-color: rgb(152, 185, 193);
+
+    /* -fx-background-image: url('/resources/images/rmit-2.jpg');
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center; */
+}
+
+.error-message {
+    -fx-fill: red;
+    -fx-font-weight: bold;
+}
+
+.success-message {
+    -fx-fill: rgb(33, 134, 33);
+    -fx-font-weight: bold;
+}
+
+.table-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000054;
+    -fx-font-weight: bold;
+    -fx-padding: 3;
+
+    -fx-border-color: transparent transparent #e60028 transparent;
+    -fx-border-width: 0 0 4 0;
+}
+
+.table-button:hover {
+    -fx-background-color: #e60028;
+    -fx-text-fill: white;
+}
+
+.management-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000054;
+    -fx-font-weight: bold;
+    -fx-padding: 15;
+
+    -fx-border-color: transparent transparent #e60028 transparent;
+    -fx-border-width: 0 0 4 0;
+}
+
+.management-button:hover {
+    -fx-background-color: #e60028;
+    -fx-text-fill: white;
+}
+
+.submit-button {
+    -fx-background-color: #e60028;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 15;
+
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-border-width: 0 0 4 0;
+}
+
+.submit-button:hover {
+    -fx-background-color: #a2001b;
+}
+
+.submit-button:disabled {
+    -fx-background-color: #b2b2b2;
+}
+
+.back-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000054;
+    -fx-font-weight: bold;
+    -fx-padding: 15;
+    -fx-border-color: transparent transparent #e60028 transparent;
+    -fx-border-width: 0 0 4 0;
+}
+
+.back-button:hover {
+    -fx-background-color: #e60028;
+    -fx-text-fill: white;
+    -fx-border-color: transparent transparent transparent transparent;
+
+}
+
+.action-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000054;
+    -fx-font-weight: bold;
+    -fx-padding: 15;
+    -fx-border-color: transparent transparent rgb(176, 213, 229) transparent;
+    -fx-border-width: 0 0 4 0;
+}
+
+.action-button:hover {
+    -fx-background-color: rgb(176, 213, 229);
+    -fx-text-fill: #000054;
+    -fx-border-color: transparent transparent transparent transparent;
+}
+
+.action-button:disabled {
+    -fx-background-color: #b2b2b2;
+    -fx-border-color: transparent transparent transparent transparent;
+}
+
+
+.label {
+    -fx-text-fill: #515e59;
+    -fx-font-size: 14px;
+}
+
+.text-field {
+    -fx-background-color: ffffff;
+    -fx-text-fill: #000;
+    -fx-border-color: ffffff;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+    -fx-font-size: 12px;
+}
+
+.sort-container {
+    -fx-background-color: rgba(230, 224, 224, 0.781);
+    -fx-padding: 20px;
+    -fx-border-insets: 20px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.management-container {
+    -fx-background-color: rgb(230, 224, 224);
+
+    -fx-padding: 20px;
+    -fx-border-insets: 20px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+
+}
+
+.user-container {
+    -fx-background-color: rgb(230, 224, 224);
+
+    -fx-padding: 20px;
+    -fx-border-insets: 20px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+
+}
