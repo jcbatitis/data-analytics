@@ -109,16 +109,19 @@ public class UserController {
             view.setValidationMessage("");
 
             if (isExisting && !hasLoggedUser) {
+                view.toggleValidationMessageClass(false);
                 view.setValidationMessage("Username taken, please use a different username.");
                 return;
             }
 
             if (isExisting && !username.equals(user.getUsername())) {
+                view.toggleValidationMessageClass(false);
                 view.setValidationMessage("Username taken, please use a different username.");
                 return;
             }
 
             if (!password.equals(confirmPassword)) {
+                view.toggleValidationMessageClass(false);
                 view.setValidationMessage("Password and confirm password is not the same.");
                 return;
             }
@@ -136,7 +139,9 @@ public class UserController {
             } else {
                 updateUser(userPayload);
             }
+
         } catch (InvalidFormSubmissionException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         }
     }
@@ -153,8 +158,12 @@ public class UserController {
             if (job) {
                 setupDashboardView(payload);
                 this.user = payload;
+                view.toggleValidationMessageClass(true);
+
             }
         } catch (EntityAlreadyExistsException e) {
+            view.toggleValidationMessageClass(false);
+
             view.setValidationMessage(e.getMessage());
         }
     }
@@ -170,8 +179,12 @@ public class UserController {
             if (job) {
                 view.setValidationMessage("User details updated successfully");
                 this.user = payload;
+                view.toggleValidationMessageClass(true);
+
             }
         } catch (EntityNotFoundException e) {
+            view.toggleValidationMessageClass(false);
+
             view.setValidationMessage(e.getMessage());
         }
     }

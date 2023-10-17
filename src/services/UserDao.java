@@ -17,7 +17,8 @@ public class UserDao implements Dao<User> {
     private Connection connection;
 
     public UserDao() {
-        connection = DatabaseUtil.getConnection();
+        DatabaseUtil db = DatabaseUtil.getInstance();
+        connection = db.getConnection();
     }
 
     @Override
