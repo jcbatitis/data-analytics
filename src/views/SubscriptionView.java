@@ -28,7 +28,7 @@ public class SubscriptionView {
     private final Text header = new Text();
     private final ToggleGroup vipToggleGroup = new ToggleGroup();
     private final GridPane vipGrid = GridUtil.setupNoPaddingGrid();
-    private final Button backButton = new Button("Back");
+    private final Button backButton = new Button("Back to Dashboard");
     private final Button submitButton = new Button("Submit");
     private final Text validationMessage = new Text();
     private final RadioButton yesOption = new RadioButton("Yes");
@@ -47,17 +47,19 @@ public class SubscriptionView {
     private void setupLayout() {
         grid = GridUtil.setupCenteredGrid();
         scene = new Scene(grid, 600, 275);
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
         setupHeader();
         setupIsVip();
         setupButtons();
+        setupStyleClasses();
     }
 
     /**
      * SETUP THE UI CONTROLS
      */
     private void setupHeader() {
-        header.setFont(Font.font("Tahoma", FontWeight.BOLD, 22));
+        header.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         grid.add(header, 0, 0);
     }
 
@@ -84,6 +86,8 @@ public class SubscriptionView {
         HBox bbox = new HBox(10);
         bbox.setAlignment(Pos.CENTER_RIGHT);
         bbox.getChildren().add(validationMessage);
+        validationMessage.getStyleClass().add("error-message");
+        validationMessage.getStyleClass().add("error-message");
         grid.add(bbox, 0, 3, 2, 1);
 
         HBox hBox = new HBox(10);
@@ -94,6 +98,19 @@ public class SubscriptionView {
         hBox.getChildren().addAll(backButton, region, submitButton);
 
         grid.add(hBox, 0, 4, 2, 1);
+    }
+
+    private void setupStyleClasses() {
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
+
+        validationMessage.getStyleClass().add("error-message");
+        submitButton.getStyleClass().setAll("submit-button");
+        backButton.getStyleClass().setAll("back-button");
+
+        submitButton.setMinWidth(75);
+        backButton.setMinWidth(75);
+        submitButton.setAlignment(Pos.CENTER);
+        backButton.setAlignment(Pos.CENTER);
     }
 
     /*
@@ -145,5 +162,13 @@ public class SubscriptionView {
 
     public void setHeader(String header) {
         this.header.setText(header);
+    }
+
+    public void toggleValidationMessageClass(Boolean isSuccess) {
+        if (isSuccess) {
+            validationMessage.getStyleClass().setAll("success-message");
+        } else {
+            validationMessage.getStyleClass().setAll("error-message");
+        }
     }
 }

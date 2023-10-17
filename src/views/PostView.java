@@ -26,6 +26,13 @@ public class PostView {
     // Controls
     private final Text title = new Text();
     private final Text header = new Text();
+
+    private final Label contentLabel = new Label("Content: ");
+    private final Label authorLabel = new Label("Author: ");
+    private final Label likesLabel = new Label("Likes: ");
+    private final Label sharesLabel = new Label("Shares: ");
+    private final Label dateLabel = new Label("Date: ");
+
     private final TextField postIdField = new TextField();
     private final TextField contentField = new TextField();
     private final TextField authorField = new TextField();
@@ -63,12 +70,14 @@ public class PostView {
      * SETUP THE LAYOUT FOR THE VIEW
      */
     private void setupLayout() {
-        grid = GridUtil.setupCenteredGrid();
-        scene = new Scene(grid, 700, 500);
+        grid = GridUtil.setupCenteredGridSingleColumn();
+        scene = new Scene(grid, 600, 600);
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
         setupHeader();
         setupPostDetailControls();
         setupButtons();
+        setupStyleClasses();
     }
 
     /**
@@ -76,7 +85,7 @@ public class PostView {
      */
     private void setupHeader() {
         header.setFont(Font.font("Tahona", FontWeight.BOLD, 22));
-        grid.add(header, 0, 0, 2, 1);
+        grid.add(header, 0, 0);
     }
 
     private void setupPostDetailControls() {
@@ -87,8 +96,8 @@ public class PostView {
         HBox.setHgrow(region1, Priority.ALWAYS);
         hbox.getChildren().addAll(postDetailTitle, region1, deleteButton, editButton);
 
-        postDetailTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
-        grid.add(hbox, 0, 1, 2, 1);
+        postDetailTitle.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        grid.add(hbox, 0, 1);
 
         // Post Id
         // Label postIdLabel = new Label("Post Id: ");
@@ -96,30 +105,20 @@ public class PostView {
         // grid.add(postIdLabel, 0, 2);
         // grid.add(postIdField, 1, 2);
 
-        Label contentLabel = new Label("Content: ");
+        grid.add(contentLabel, 0, 2);
+        grid.add(contentField, 0, 3);
 
-        grid.add(contentLabel, 0, 3);
-        grid.add(contentField, 1, 3, 1, 2);
-
-        Label authorLabel = new Label("Author: ");
-
-        grid.add(authorLabel, 0, 5);
-        grid.add(authorField, 1, 5);
-
-        Label likesLabel = new Label("Likes: ");
+        grid.add(authorLabel, 0, 4);
+        grid.add(authorField, 0, 5);
 
         grid.add(likesLabel, 0, 6);
-        grid.add(likesField, 1, 6);
+        grid.add(likesField, 0, 7);
 
-        Label sharesLabel = new Label("Shares: ");
+        grid.add(sharesLabel, 0, 8);
+        grid.add(sharesField, 0, 9);
 
-        grid.add(sharesLabel, 0, 7);
-        grid.add(sharesField, 1, 7);
-
-        Label dateLabel = new Label("Date: ");
-
-        grid.add(dateLabel, 0, 8);
-        grid.add(dateTimeField, 1, 8);
+        grid.add(dateLabel, 0, 10);
+        grid.add(dateTimeField, 0, 11);
     }
 
     private void setupButtons() {
@@ -127,14 +126,42 @@ public class PostView {
         // grid.add(validationMessage, 1, 8);
         bbox.setAlignment(Pos.CENTER_RIGHT);
         bbox.getChildren().add(validationMessage);
-        grid.add(bbox, 1, 9);
+        validationMessage.getStyleClass().add("error-message");
+        validationMessage.getStyleClass().add("error-message");
+        grid.add(bbox, 0, 12);
 
         HBox hBox = new HBox(10);
         Region region = new Region();
         HBox.setHgrow(region, Priority.ALWAYS);
 
         hBox.getChildren().addAll(backButton, region, exportButton, submitButton);
-        grid.add(hBox, 0, 10, 2, 1);
+        grid.add(hBox, 0, 13);
+    }
+
+    private void setupStyleClasses() {
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
+
+        contentLabel.getStyleClass().add("label");
+        authorLabel.getStyleClass().add("label");
+        likesLabel.getStyleClass().add("label");
+        sharesLabel.getStyleClass().add("label");
+        dateLabel.getStyleClass().add("label");
+
+        postIdField.getStyleClass().add("text-field");
+        contentField.getStyleClass().add("text-field");
+        authorField.getStyleClass().add("text-field");
+        likesField.getStyleClass().add("text-field");
+        sharesField.getStyleClass().add("text-field");
+        dateTimeField.getStyleClass().add("text-field");
+
+        validationMessage.getStyleClass().add("error-message");
+        submitButton.getStyleClass().setAll("submit-button");
+        backButton.getStyleClass().setAll("back-button");
+
+        submitButton.setMinWidth(75);
+        backButton.setMinWidth(75);
+        submitButton.setAlignment(Pos.CENTER);
+        backButton.setAlignment(Pos.CENTER);
     }
 
     /*
@@ -263,6 +290,14 @@ public class PostView {
 
     public void setValidationMessage(String message) {
         validationMessage.setText(message);
+    }
+
+    public void toggleValidationMessageClass(Boolean isSuccess) {
+        if (isSuccess) {
+            validationMessage.getStyleClass().setAll("success-message");
+        } else {
+            validationMessage.getStyleClass().setAll("error-message");
+        }
     }
 }
 // public void setPosts(ObservableList<Post> posts) {

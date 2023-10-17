@@ -25,6 +25,15 @@ public class UserView {
     private GridPane grid;
 
     // Controls
+    Text personalDetailsTitle = new Text("Personal Details");
+    Text accountDetailsTitle = new Text("Account Details");
+
+    Label firstNameLabel = new Label("First Name");
+    Label lastNameLabel = new Label("Last Name");
+    Label usernameLabel = new Label("Username");
+    Label passwordLabel = new Label("Password");
+    Label confirmPasswordLabel = new Label("Confirm Password");
+
     private final Text title = new Text();
     private final Text header = new Text();
     private final TextField firstNameField = new TextField();
@@ -53,61 +62,51 @@ public class UserView {
      * SETUP THE LAYOUT FOR THE VIEW
      */
     private void setupLayout() {
-        grid = GridUtil.setupCenteredGrid();
+        grid = GridUtil.setupCenteredGridSingleColumn();
         scene = new Scene(grid, 600, 600);
 
         setupHeader();
         setupPersonalDetailControls();
         setupAccountDetailControls();
         setupButtons();
+        setupStyleClasses();
     }
 
     /**
      * SETUP THE UI CONTROLS
      */
     private void setupHeader() {
-        header.setFont(Font.font("Tahoma", FontWeight.BOLD, 22));
-        grid.add(header, 0, 0, 2, 1);
+        header.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        grid.add(header, 0, 0);
     }
 
     private void setupPersonalDetailControls() {
-        Text personalDetailsTitle = new Text("Personal Details");
-        personalDetailsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
-        grid.add(personalDetailsTitle, 0, 1, 2, 1);
-
-        Label firstNameLabel = new Label("First Name: ");
+        personalDetailsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        grid.add(personalDetailsTitle, 0, 1);
 
         grid.add(firstNameLabel, 0, 2);
-        grid.add(firstNameField, 1, 2);
+        grid.add(firstNameField, 0, 3);
 
-        Label lastNameLabel = new Label("Last Name: ");
-
-        grid.add(lastNameLabel, 0, 3);
-        grid.add(lastNameField, 1, 3);
+        grid.add(lastNameLabel, 0, 4);
+        grid.add(lastNameField, 0, 5);
 
         Separator separator = new Separator();
-        grid.add(separator, 0, 4, 2, 1);
+        grid.add(separator, 0, 6);
     }
 
     private void setupAccountDetailControls() {
-        Text accountDetailsTitle = new Text("Account Details");
-        accountDetailsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
+        accountDetailsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 16));
 
-        grid.add(accountDetailsTitle, 0, 5, 2, 1);
-        Label usernameLabel = new Label("Username: ");
+        grid.add(accountDetailsTitle, 0, 7);
 
-        grid.add(usernameLabel, 0, 6);
-        grid.add(usernameField, 1, 6);
+        grid.add(usernameLabel, 0, 8);
+        grid.add(usernameField, 0, 9);
 
-        Label passwordLabel = new Label("Password: ");
+        grid.add(passwordLabel, 0, 10);
+        grid.add(passwordField, 0, 11);
 
-        grid.add(passwordLabel, 0, 7);
-        grid.add(passwordField, 1, 7);
-
-        Label confirmPasswordLabel = new Label("Confirm Password: ");
-
-        grid.add(confirmPasswordLabel, 0, 8);
-        grid.add(confirmPasswordField, 1, 8);
+        grid.add(confirmPasswordLabel, 0, 12);
+        grid.add(confirmPasswordField, 0, 13);
 
     }
 
@@ -124,7 +123,32 @@ public class UserView {
 
         VBox vBox = new VBox(10, validationBox, buttonBox);
 
-        grid.add(vBox, 0, 9, 2, 1);
+        grid.add(vBox, 0, 14);
+    }
+
+    private void setupStyleClasses() {
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
+
+        firstNameLabel.getStyleClass().add("label");
+        lastNameLabel.getStyleClass().add("label");
+        usernameLabel.getStyleClass().add("label");
+        passwordLabel.getStyleClass().add("label");
+        confirmPasswordLabel.getStyleClass().add("label");
+
+        firstNameField.getStyleClass().add("text-field");
+        lastNameField.getStyleClass().add("text-field");
+        usernameField.getStyleClass().add("text-field");
+        passwordField.getStyleClass().add("text-field");
+        confirmPasswordField.getStyleClass().add("text-field");
+
+        validationMessage.getStyleClass().add("error-message");
+        submitButton.getStyleClass().setAll("submit-button");
+        backButton.getStyleClass().setAll("back-button");
+
+        submitButton.setMinWidth(75);
+        backButton.setMinWidth(75);
+        submitButton.setAlignment(Pos.CENTER);
+        backButton.setAlignment(Pos.CENTER);
     }
 
     /*

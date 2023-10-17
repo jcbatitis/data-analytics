@@ -24,7 +24,7 @@ public class DataVisualisationView {
     // Controls
     private final Text title = new Text();
     private final Text header = new Text();
-    private final Button backButton = new Button("Back");
+    private final Button backButton = new Button("Back to Dashboard");
     private final Button submitButton = new Button("Submit");
     private final Text validationMessage = new Text();
     private final PieChart pieChart = new PieChart();
@@ -46,6 +46,7 @@ public class DataVisualisationView {
     private void setupLayout() {
         grid = GridUtil.setupCenteredGrid();
         scene = new Scene(grid, 550, 550);
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
         setupHeader();
         setupPieChart();
@@ -56,7 +57,7 @@ public class DataVisualisationView {
      * SETUP THE UI CONTROLS
      */
     private void setupHeader() {
-        header.setFont(Font.font("Tahoma", FontWeight.BOLD, 22));
+        header.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         grid.add(header, 0, 0);
     }
 
@@ -73,6 +74,7 @@ public class DataVisualisationView {
         HBox validationBox = new HBox(10);
         validationBox.setAlignment(Pos.CENTER_RIGHT);
         validationBox.getChildren().add(validationMessage);
+        validationMessage.getStyleClass().add("error-message");
 
         HBox buttonBox = new HBox(10);
         Region region = new Region();

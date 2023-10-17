@@ -6,38 +6,10 @@
   "configurations": [
     {
       "type": "java",
-      "name": "CreatePostRow",
-      "request": "launch",
-      "mainClass": "_sqlite.CreatePostRow",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
-      "name": "CreateUserRow",
-      "request": "launch",
-      "mainClass": "_sqlite.CreateUserRow",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
-      "name": "CreatePostsTable",
-      "request": "launch",
-      "mainClass": "_sqlite.CreatePostsTable",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
-      "name": "CreateUsersTable",
-      "request": "launch",
-      "mainClass": "_sqlite.CreateUsersTable",
-      "projectName": "data_analytics_hub_4b2055e"
-    },
-    {
-      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",
-      "vmArgs": "--module-path /Users/jejo/Downloads/Java/javafx-sdk-21/lib/ --add-modules=javafx.controls,javafx.fxml,javafx.graphics,javafx.base"
+      "vmArgs": "--module-path /Users/jcb/Documents/RMIT/SDK/javafx-sdk-21/lib/ --add-modules=javafx.controls,javafx.fxml,javafx.graphics,javafx.base"
     }
   ]
 }

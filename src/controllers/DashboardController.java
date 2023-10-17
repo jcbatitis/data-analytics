@@ -66,17 +66,13 @@ public class DashboardController {
 
         String welcomeMessage = String.format("Welcome %s!", user.getFullName());
         view.setHeader(welcomeMessage);
-
-        if (this.user.isVIP()) {
-            view.setupVipControlSection();
-        }
+        view.setupVipControlSection(this.user.isVIP());
     }
 
     /**
      * SETUPS EVENT HANDLERS FOR VIEW
      */
     private void setupEventHandlers() {
-        toggleSearchSectionHandler();
         toggleSortSectionHandler();
 
         // adds delay for searching in table
@@ -88,8 +84,8 @@ public class DashboardController {
         view.getDataVisualisationButton().setOnAction(this::dataVisualisationHandler);
         view.getExportButton().setOnAction(this::exportHandler);
         view.getImportButton().setOnAction(this::importHandler);
+        view.getSubscribeButton().setOnAction(this::subscribeHandler);
 
-        view.getToggleSearchSection().selectedProperty().addListener((o, ol, nv) -> toggleSearchSectionHandler());
         view.getToggleSortSection().selectedProperty().addListener((o, ol, nv) -> toggleSortSectionHandler());
 
         view.getEditProfileMenu().setOnAction(this::editProfileHandler);
@@ -221,12 +217,15 @@ public class DashboardController {
     }
 
     private void searchHandler(ActionEvent e) {
-        String searchBy = view.getSearchToggleGroupValue();
+        String searchBy = "term";
         String searchTerm = view.getSearchTerm();
 
         if (searchTerm.isEmpty()) {
             return;
         }
+
+        view.getToggleSortSection().setSelected(false);
+        toggleSortSectionHandler();
 
         if (searchBy == "term") {
             ObservableList<Post> posts = FXCollections.observableArrayList(dao.getPostsBySearchTerm(searchTerm));
@@ -297,12 +296,15 @@ public class DashboardController {
                     writer.append(post.getDateTime() + "\n");
                 }
 
+                view.toggleValidationMessageClass(true);
                 view.setValidationMessage("File exported successfully!");
 
             } catch (IOException e) {
+                view.toggleValidationMessageClass(false);
                 view.setValidationMessage(e.getMessage());
             }
         } catch (FilePathRequiredException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         } finally {
             view.getExportButton().setDisable(false);
@@ -340,11 +342,14 @@ public class DashboardController {
                     }
                 }
 
+                view.toggleValidationMessageClass(true);
                 view.setValidationMessage("File imported successfully!");
 
             } catch (IOException e) {
+                view.toggleValidationMessageClass(false);
                 view.setValidationMessage(e.getMessage());
             } catch (EntityAlreadyExistsException e) {
+                view.toggleValidationMessageClass(false);
                 view.setValidationMessage(e.getMessage());
             } finally {
                 ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
@@ -358,24 +363,6 @@ public class DashboardController {
         }
     }
 
-    private void toggleSearchSectionHandler() {
-        Boolean isDisabled = !view.getToggleSearchSection().isSelected();
-        for (Toggle toggle : view.getSearchToggleGroup().getToggles()) {
-            Node node = (Node) toggle;
-            node.setDisable(isDisabled);
-        }
-
-        view.getSearchField().setDisable(isDisabled);
-        view.getSearchButton().setDisable(isDisabled);
-
-        if (!isDisabled) {
-            // If the search section is enabled, disable the sort section
-            view.getToggleSortSection().setSelected(false);
-            toggleSortSectionHandler();
-        }
-        view.getSortField().setText("");
-    }
-
     private void toggleSortSectionHandler() {
         Boolean isDisabled = !view.getToggleSortSection().isSelected();
         for (Toggle toggle : view.getSortToggleGroup().getToggles()) {
@@ -383,15 +370,12 @@ public class DashboardController {
             node.setDisable(isDisabled);
         }
 
+        if (!isDisabled) {
+            view.getSearchField().setText("");
+        }
+
         view.getSortField().setDisable(isDisabled);
         view.getSortButton().setDisable(isDisabled);
-
-        if (!isDisabled) {
-            // If the sort section is enabled, disable the search section
-            view.getToggleSearchSection().setSelected(false);
-            toggleSearchSectionHandler();
-        }
-        view.getSearchField().setText("");
+        view.getSortField().setText("");
     }
-
 }

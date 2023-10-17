@@ -96,12 +96,15 @@ public class PostController {
                 writer.append(post.getShares() + ",");
                 writer.append(post.getDateTime() + "\n");
 
+                view.toggleValidationMessageClass(true);
                 view.setValidationMessage("File exported successfully!");
 
             } catch (IOException e) {
+                view.toggleValidationMessageClass(false);
                 view.setValidationMessage(e.getMessage());
             }
         } catch (FilePathRequiredException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         } finally {
             view.getExportButton().setDisable(false);
@@ -149,8 +152,10 @@ public class PostController {
                 updatePost(postPayload);
             }
         } catch (InvalidFormSubmissionException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         } catch (CustomDateTimeParseException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         }
     }
@@ -167,11 +172,13 @@ public class PostController {
             if (job) {
 
                 DashboardView view = new DashboardView();
+                view.toggleValidationMessageClass(true);
                 view.setValidationMessage("Post created successfully.");
 
                 setupDashboardView(view, user);
             }
         } catch (EntityAlreadyExistsException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         }
     }
@@ -185,9 +192,11 @@ public class PostController {
         try {
             Boolean job = dao.update(payload);
             if (job) {
+                view.toggleValidationMessageClass(true);
                 view.setValidationMessage("Post updated successfully!");
             }
         } catch (EntityNotFoundException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         }
     }
@@ -197,11 +206,13 @@ public class PostController {
             Boolean job = dao.delete(post);
             if (job) {
                 DashboardView view = new DashboardView();
+                view.toggleValidationMessageClass(true);
                 view.setValidationMessage("Post deleted successfully.");
 
                 setupDashboardView(view, user);
             }
         } catch (EntityNotFoundException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         }
     }

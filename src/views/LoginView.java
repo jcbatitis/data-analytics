@@ -20,6 +20,10 @@ public class LoginView {
     private Scene scene;
 
     // Controls
+    Text sceneTitle = new Text("Dashboard Analytics Hub - S3856624");
+    Label usernameLabel = new Label("Username");
+    Label passwordLabel = new Label("Password");
+
     private final TextField usernameField = new TextField();
     private final PasswordField passwordField = new PasswordField();
     private final Button registerButton = new Button("Register");
@@ -32,41 +36,39 @@ public class LoginView {
     public LoginView() {
         setupLayout();
     }
-    
+
     /**
      * SETUP THE LAYOUT FOR THE VIEW
      */
     private void setupLayout() {
-        grid = GridUtil.setupCenteredGrid();
-        scene = new Scene(grid, 600, 275);
+        grid = GridUtil.setupCenteredGridSingleColumn();
+        scene = new Scene(grid, 500, 700);
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
         setupHeader();
         setupUsername();
         setupPassword();
         setupButtons();
+        setupStyleClasses();
     }
 
     /**
      * SETUP THE UI CONTROLS
      */
     private void setupHeader() {
-        Text sceneTitle = new Text("Welcome");
-        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.add(sceneTitle, 0, 0, 2, 1);
+        sceneTitle.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        grid.add(sceneTitle, 0, 0);
     }
 
     private void setupUsername() {
-        Label usernameLabel = new Label("Username: ");
 
         grid.add(usernameLabel, 0, 1);
-        grid.add(usernameField, 1, 1);
+        grid.add(usernameField, 0, 2);
     }
 
     private void setupPassword() {
-        Label passwordLabel = new Label("Password: ");
-
-        grid.add(passwordLabel, 0, 2);
-        grid.add(passwordField, 1, 2);
+        grid.add(passwordLabel, 0, 3);
+        grid.add(passwordField, 0, 4);
 
     }
 
@@ -74,13 +76,32 @@ public class LoginView {
         HBox bbox = new HBox(10);
         bbox.setAlignment(Pos.CENTER_RIGHT);
         bbox.getChildren().add(validationMessage);
-        grid.add(bbox, 0, 3, 2, 1);
+
+        grid.add(bbox, 0, 5);
 
         HBox hBox = new HBox(10);
         hBox.setAlignment(Pos.BOTTOM_RIGHT);
         hBox.getChildren().addAll(registerButton, submitButton);
 
-        grid.add(hBox, 1, 4);
+        grid.add(hBox, 0, 6);
+    }
+
+    private void setupStyleClasses() {
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
+        usernameLabel.getStyleClass().add("label");
+        passwordLabel.getStyleClass().add("label");
+
+        usernameField.getStyleClass().add("text-field");
+        passwordField.getStyleClass().add("text-field");
+
+        validationMessage.getStyleClass().add("error-message");
+        submitButton.getStyleClass().setAll("submit-button");
+        registerButton.getStyleClass().setAll("back-button");
+
+        submitButton.setMinWidth(75);
+        registerButton.setMinWidth(75);
+        submitButton.setAlignment(Pos.CENTER);
+        registerButton.setAlignment(Pos.CENTER);
     }
 
     /*
@@ -113,7 +134,7 @@ public class LoginView {
     /*
      * SETTERS
      */
-    
+
     public void setValidationMessage(String message) {
         this.validationMessage.setText(message);
     }

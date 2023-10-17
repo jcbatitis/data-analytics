@@ -6,6 +6,7 @@ import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -15,7 +16,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Separator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -23,8 +23,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -36,8 +39,20 @@ import utils.GridUtil;
 public class DashboardView {
 
     // Layout
-    private GridPane grid;
+    private GridPane searchGrid = GridUtil.setupNoPaddingGrid();
+    private GridPane sortGrid = GridUtil.setupNoPaddingGrid();
+
     private Scene scene;
+    private VBox parentVBox = new VBox(10);
+
+    private VBox userDetailVBox = new VBox(10);
+    private VBox searchVbox = new VBox(10);
+    private VBox sortVBox = new VBox(10);
+    private VBox vipVBox = new VBox(10);
+
+    private GridPane controlGrid = new GridPane();
+
+    private VBox postTableBox = new VBox(10);
 
     private final BorderPane root = new BorderPane();
 
@@ -52,6 +67,7 @@ public class DashboardView {
     private final Button dataVisualisationButton = new Button("Reports");
     private final Button exportButton = new Button("Export");
     private final Button importButton = new Button("Import");
+    private final Button subscribeButton = new Button("Subscribe");
 
     // Table Query Controls
     private final ToggleGroup searchToggleGroup = new ToggleGroup();
@@ -88,18 +104,42 @@ public class DashboardView {
      * SETUP THE LAYOUT FOR THE VIEW
      */
     private void setupLayout() {
-        grid = GridUtil.setupGrid();
-
         root.setTop(menuBar);
-        root.setCenter(grid);
+        root.setCenter(parentVBox);
+
+        parentVBox.setPadding(new Insets(25, 25, 25, 25));
 
         setupMenu();
         setupHeader();
         setupSearchSection();
         setupSortSection();
+        setupUserDetailSection();
         setupPostsTable();
 
-        scene = new Scene(root, 900, 500);
+        scene = new Scene(root, 900, 800);
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
+
+        ColumnConstraints column1 = new ColumnConstraints();
+        ColumnConstraints column2 = new ColumnConstraints();
+        column1.setPercentWidth(50);
+        column2.setPercentWidth(50);
+
+        controlGrid.getColumnConstraints().addAll(column1, column2);
+
+        HBox.setHgrow(sortVBox, Priority.ALWAYS);
+        HBox.setHgrow(vipVBox, Priority.ALWAYS);
+
+        controlGrid.add(userDetailVBox, 0, 0);
+        controlGrid.add(searchVbox, 1, 0);
+        controlGrid.add(sortVBox, 0, 1);
+        controlGrid.add(vipVBox, 1, 1);
+
+        controlGrid.setHgap(10);
+        controlGrid.setVgap(10);
+
+        parentVBox.getChildren().addAll(postTableBox, controlGrid);
+        setupStyleClasses();
+
     }
 
     /**
@@ -112,106 +152,134 @@ public class DashboardView {
 
     private void setupHeader() {
         header.setFont(GlobalUtil.getHeaderFont());
-        grid.add(header, 0, 0, 11, 1);
-    }
-
-    private void setupSearchSection() {
-        GridPane searchGrid = GridUtil.setupNoPaddingGrid();
-
-        // Header
-        Text searchTitle = new Text("Search");
-        HBox searchHeader = new HBox(5, toggleSearchSection, searchTitle);
-
-        searchTitle.setFont(GlobalUtil.getSubHeaderFont());
-        searchGrid.add(searchHeader, 0, 0, 2, 1);
-
-        toggleSearchSection.setSelected(false);
-
-        // Toggle Group
-        RadioButton searchByTerm = new RadioButton("Term");
-        RadioButton searchByPostId = new RadioButton("Post ID");
-
-        Label searchToggleGroupLabel = new Label("Search by:");
-        searchByTerm.setSelected(true);
-
-        searchByTerm.setToggleGroup(searchToggleGroup);
-        searchByTerm.setUserData("term");
-        searchByPostId.setToggleGroup(searchToggleGroup);
-        searchByPostId.setUserData("postId");
-
-        HBox hBox = new HBox(10, searchByTerm, searchByPostId);
-        searchGrid.add(searchToggleGroupLabel, 0, 1);
-        searchGrid.add(hBox, 1, 1);
-
-        searchSubmitButton.setMinWidth(80);
-
-        HBox searchControl = new HBox(5, searchField, searchSubmitButton);
-        VBox vbox = new VBox(10, searchGrid, searchControl);
-
-        grid.add(vbox, 0, 1);
     }
 
     private void setupSortSection() {
-        GridPane sortGrid = GridUtil.setupNoPaddingGrid();
-
-        Text sortTitle = new Text("Sort");
+        // Header
+        Text sortTitle = new Text("FILTER");
         HBox sortHeader = new HBox(5, toggleSortSection, sortTitle);
-
         sortTitle.setFont(GlobalUtil.getSubHeaderFont());
-        sortGrid.add(sortHeader, 0, 0, 2, 1);
 
-        toggleSortSection.setSelected(false);
+        // Description
+        String description = "To sort, select an option below then enter the number of entries.";
+        Label filterDescription = new Label(description);
+        filterDescription.setWrapText(true);
+        HBox descriptionBox = new HBox(5, filterDescription);
+
+        // sortSection.getChildren().addAll(sortHeader, filterDescription);
+
+        // Toggle Buttons
+        GridPane sortToggleGrid = GridUtil.setupNoPaddingGrid();
+        GridPane sortControlGrid = GridUtil.setupNoPaddingGrid();
+
+        Label sortToggleGroupLabel = new Label("Sort by:");
+        Label entryLabel = new Label("Entries:");
 
         RadioButton sortByLikes = new RadioButton("Likes");
         RadioButton sortByPosts = new RadioButton("Shares");
+        HBox sortOptionsBox = new HBox(10, sortByLikes, sortByPosts);
 
-        Label sortToggleGroupLabel = new Label("Sort by:");
+        toggleSortSection.setSelected(false);
         sortByLikes.setSelected(true);
-
         sortByLikes.setToggleGroup(sortToggleGroup);
         sortByLikes.setUserData("likes");
         sortByPosts.setToggleGroup(sortToggleGroup);
         sortByPosts.setUserData("shares");
 
-        sortGrid.add(sortToggleGroupLabel, 0, 1);
-        HBox hBox = new HBox(10, sortByLikes, sortByPosts);
-        sortGrid.add(hBox, 1, 1);
+        HBox sortControl = new HBox(5, sortField, sortSubmitButton);
+        sortField.setMinWidth(225);
+        sortToggleGrid.add(sortToggleGroupLabel, 0, 0);
+        sortToggleGrid.add(sortOptionsBox, 1, 0);
+
+        sortControlGrid.add(entryLabel, 0, 0);
+        sortControlGrid.add(sortControl, 1, 0);
+
+        ColumnConstraints column1 = new ColumnConstraints();
+        ColumnConstraints column2 = new ColumnConstraints();
+        column1.setPercentWidth(15);
+        column2.setPercentWidth(85);
+
+        sortToggleGrid.getColumnConstraints().addAll(column1, column2);
+        sortControlGrid.getColumnConstraints().addAll(column1, column2);
 
         sortSubmitButton.setMinWidth(80);
 
-        HBox sortControl = new HBox(5, sortField, sortSubmitButton);
-        VBox vbox = new VBox(10, new Separator(), sortGrid, sortControl);
-
-        grid.add(vbox, 0, 2);
+        sortVBox.getChildren().addAll(sortHeader, descriptionBox, sortToggleGrid, sortControlGrid);
+        sortVBox.getStyleClass().add("sort-container");
     }
 
-    public void setupVipControlSection() {
-        GridPane vipControlsGrid = GridUtil.setupNoPaddingGrid();
+    private void setupSearchSection() {
+        // Header
+        Text tableTitle = new Text("TABLE");
+        HBox tableHeader = new HBox(5, tableTitle);
+        tableTitle.setFont(GlobalUtil.getSubHeaderFont());
 
-        Text vipControlsTitle = new Text("VIP Controls");
-        vipControlsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
-        vipControlsGrid.add(vipControlsTitle, 0, 0);
+        // Description
+        String description = "To search, just type in a term and it will give you its results.";
+        Label tableDescription = new Label(description);
+        tableDescription.setWrapText(true);
+        HBox descriptionBox = new HBox(5, tableDescription);
+        Label searchLabel = new Label("Search: ");
 
-        addButton.setMinWidth(120);
-        refreshButton.setMinWidth(120);
-        dataVisualisationButton.setMinWidth(120);
+        GridPane searchControlGrid = GridUtil.setupNoPaddingGrid();
 
-        HBox tableControlsRow1 = new HBox(5, importButton, exportButton);
-        HBox tableControlsRow2 = new HBox(5, dataVisualisationButton);
+        searchField.setMinWidth(225);
+        searchControlGrid.add(searchLabel, 0, 0);
+        searchControlGrid.add(searchField, 1, 0);
 
-        VBox vbox = new VBox(10, new Separator(), vipControlsGrid, tableControlsRow1, tableControlsRow2);
+        ColumnConstraints column1 = new ColumnConstraints();
+        ColumnConstraints column2 = new ColumnConstraints();
+        column1.setPercentWidth(15);
+        column2.setPercentWidth(85);
 
-        grid.add(vbox, 0, 3);
+        searchControlGrid.getColumnConstraints().addAll(column1, column2);
+
+        HBox tableControlsRow1 = new HBox(5, addButton, refreshButton);
+
+        searchVbox.getChildren().addAll(tableHeader, descriptionBox, searchControlGrid, tableControlsRow1);
+        searchVbox.getStyleClass().add("sort-container");
+    }
+
+    private void setupUserDetailSection() {
+        // Description
+        String description = "Hi there, welcome to dashboard analytics hub! This is assignment #4 by Jejomar Batitis. I hope you enjoy your stay cus I want to pass...";
+        Label detailDescription = new Label(description);
+        detailDescription.setWrapText(true);
+        HBox descriptionBox = new HBox(5, detailDescription);
+
+        userDetailVBox.getChildren().addAll(header, descriptionBox);
+        userDetailVBox.getStyleClass().add("user-container");
+    }
+
+    public void setupVipControlSection(Boolean enabled) {
+        Text vipControlsTitle = new Text("MANAGEMENT");
+        vipControlsTitle.setFont(GlobalUtil.getSubHeaderFont());
+
+        String description = !enabled
+                ? "To gain access to import/export tools, and the comprehensive report viewer. Subscribe to our VIP subscription."
+                : "You can import and export data seamlessly, as well as view comprehensive reports for analysis.";
+        Label vipDescription = new Label(description);
+        vipDescription.setWrapText(true);
+
+        importButton.setMinWidth(40);
+        exportButton.setMinWidth(40);
+        dataVisualisationButton.setMinWidth(40);
+
+        HBox tableControlsRow1 = new HBox(5, vipControlsTitle);
+        HBox tableControlsRow2 = new HBox(5, vipDescription);
+        HBox tableControlsRow3 = new HBox(5, importButton, exportButton, dataVisualisationButton);
+
+        if (enabled) {
+            vipVBox.getChildren().addAll(tableControlsRow1, tableControlsRow2, tableControlsRow3);
+        } else {
+            vipVBox.getChildren().addAll(tableControlsRow1, tableControlsRow2, subscribeButton);
+        }
+        vipVBox.getStyleClass().add("management-container");
     }
 
     private void setupPostsTable() {
-        GridPane tableControlsGrid = GridUtil.setupNoPaddingGrid();
-
         Text tableControlsTitle = new Text("DATA ANALYTICS HUB");
-        tableControlsTitle.setFont(Font.font("Tahoma", FontWeight.BOLD, 16));
-        tableControlsGrid.add(tableControlsTitle, 0, 0, 2, 1);
-
-        HBox tableControls = new HBox(5, addButton, refreshButton);
+        tableControlsTitle.setFont(Font.font("Arial", FontWeight.BOLD, 16));
 
         TableColumn<Post, String> id = new TableColumn<>("Post ID");
         TableColumn<Post, String> content = new TableColumn<>("Content");
@@ -234,19 +302,35 @@ public class DashboardView {
 
         table.getColumns().setAll(columns);
 
+        selectColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+        id.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+        content.prefWidthProperty().bind(table.widthProperty().multiply(0.4));
+        author.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+        likes.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+        shares.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+        dateTime.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+
+        for (TableColumn<Post, ?> column : columns) {
+            column.setResizable(false);
+        }
+
         VBox tableBox = new VBox(10);
         tableBox.getChildren().addAll(table);
 
-        exportButton.setMinWidth(120);
-        importButton.setMinWidth(120);
+        addButton.setMinWidth(120);
+        refreshButton.setMinWidth(120);
 
-        HBox validationBox = new HBox(10);
-        validationBox.setAlignment(Pos.CENTER_RIGHT);
-        validationBox.getChildren().add(validationMessage);
+        Region region = new Region();
+        HBox.setHgrow(region, Priority.ALWAYS);
 
-        VBox vbox = new VBox(10, tableControls, tableBox, validationBox);
+        Text postTitle = new Text("DASHBOARD");
+        postTitle.setFont(GlobalUtil.getSubHeaderFont());
 
-        grid.add(vbox, 2, 1, 10, 4);
+        HBox tableControls = new HBox(5, postTitle, region, validationMessage);
+        tableControls.setAlignment((Pos.CENTER_RIGHT));
+
+        validationMessage.getStyleClass().add("error-message");
+        postTableBox.getChildren().addAll(tableControls, tableBox);
     }
 
     /**
@@ -269,6 +353,31 @@ public class DashboardView {
                 }
             }
         });
+    }
+
+    private void setupStyleClasses() {
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
+
+        validationMessage.getStyleClass().add("error-message");
+        refreshButton.getStyleClass().setAll("management-button");
+        refreshButton.setMinWidth(75);
+        refreshButton.setAlignment(Pos.CENTER);
+
+        addButton.getStyleClass().setAll("management-button");
+        addButton.setMinWidth(75);
+        addButton.setAlignment(Pos.CENTER);
+
+        importButton.getStyleClass().setAll("management-button");
+        importButton.setMinWidth(75);
+        importButton.setAlignment(Pos.CENTER);
+
+        exportButton.getStyleClass().setAll("management-button");
+        exportButton.setMinWidth(75);
+        exportButton.setAlignment(Pos.CENTER);
+
+        dataVisualisationButton.getStyleClass().setAll("management-button");
+        dataVisualisationButton.setMinWidth(75);
+        dataVisualisationButton.setAlignment(Pos.CENTER);
     }
 
     /*
@@ -330,6 +439,10 @@ public class DashboardView {
         return importButton;
     }
 
+    public Button getSubscribeButton() {
+        return subscribeButton;
+    }
+
     public MenuItem getEditProfileMenu() {
         return editProfile;
     }
@@ -384,4 +497,35 @@ public class DashboardView {
     public void setValidationMessage(String message) {
         this.validationMessage.setText(message);
     }
+
+    public void toggleValidationMessageClass(Boolean isSuccess) {
+        Boolean isErrorMessage = isSuccess ? false : true;
+
+        if (isErrorMessage) {
+            validationMessage.getStyleClass().remove("success-message");
+            validationMessage.getStyleClass().add("error-message");
+
+        } else {
+            validationMessage.getStyleClass().remove("error-message");
+            validationMessage.getStyleClass().add("success-message");
+        }
+    }
 }
+
+// Refresh
+// try {
+// // refreshButton.setPrefSize(50, 50);
+// // FileInputStream input = new
+// // FileInputStream("src/resources/images/refresh.png");
+
+// // Image image = new Image(input);
+// // ImageView imageView = new ImageView(image);
+// // imageView.setPreserveRatio(true);
+
+// // // imageView.fitWidthProperty().bind(refreshButton.widthProperty());
+// // // imageView.fitHeightProperty().bind(refreshButton.heightProperty());
+// // refreshButton.setGraphic(imageView);
+
+// } catch (FileNotFoundException e) {
+// e.printStackTrace();
+// }

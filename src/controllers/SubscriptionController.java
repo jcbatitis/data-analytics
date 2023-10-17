@@ -82,6 +82,7 @@ public class SubscriptionController {
                         ? "Subscription approved! Please log out\n and log in again to access VIP functionalities."
                         : "Subscription sucessfully cancelled.";
 
+                view.toggleValidationMessageClass(true);
                 view.setValidationMessage(message);
                 this.user = payload;
 
@@ -92,6 +93,7 @@ public class SubscriptionController {
                 enforceLogout = isVIP;
             }
         } catch (EntityNotFoundException e) {
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         }
     }
