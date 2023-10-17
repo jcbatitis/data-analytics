@@ -245,4 +245,12 @@ public class UserView {
     public void setVipField(Boolean isVip) {
         isVipField.setSelected(isVip);
     }
+
+    public void toggleValidationMessageClass(Boolean isSuccess) {
+        if (isSuccess) {
+            validationMessage.getStyleClass().setAll("success-message");
+        } else {
+            validationMessage.getStyleClass().setAll("error-message");
+        }
+    }
 }

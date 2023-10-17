@@ -1,10 +1,5 @@
 package services;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +9,6 @@ import java.util.List;
 
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
-import javafx.collections.ObservableList;
-import javafx.stage.FileChooser;
 import models.Post;
 import utils.DatabaseUtil;
 
@@ -23,7 +16,8 @@ public class PostDao implements Dao<Post> {
     private Connection connection;
 
     public PostDao() {
-        connection = DatabaseUtil.getConnection();
+        DatabaseUtil db = DatabaseUtil.getInstance();
+        connection = db.getConnection();
     }
 
     @Override
