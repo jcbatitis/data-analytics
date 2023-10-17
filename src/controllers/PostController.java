@@ -193,6 +193,10 @@ public class PostController {
             Boolean job = dao.update(payload);
             if (job) {
                 view.toggleValidationMessageClass(true);
+                view.getEditButton().setDisable(false);
+                view.getExportButton().setDisable(false);
+                view.getDeleteButton().setDisable(false);
+                view.getSubmitButton().setDisable(true);
                 view.setValidationMessage("Post updated successfully!");
             }
         } catch (EntityNotFoundException e) {
@@ -220,7 +224,10 @@ public class PostController {
     private void editHandler(ActionEvent e) {
         view.disableFormControls(false);
         view.setValidationMessage("");
+        view.getExportButton().setDisable(true);
         view.getEditButton().setDisable(true);
+        view.getDeleteButton().setDisable(true);
+
     }
 
     /**

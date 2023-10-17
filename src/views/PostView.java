@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -141,6 +143,24 @@ public class PostView {
     private void setupStyleClasses() {
         scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
+        Image trash = new Image("/resources/images/trash.png");
+        ImageView trashIcon = new ImageView(trash);
+        trashIcon.setFitHeight(15);
+        trashIcon.setFitWidth(15);
+        deleteButton.setGraphic(trashIcon);
+
+        Image edit = new Image("/resources/images/edit.png");
+        ImageView editIcon = new ImageView(edit);
+        editIcon.setFitHeight(15);
+        editIcon.setFitWidth(15);
+        editButton.setGraphic(editIcon);
+
+        Image export = new Image("/resources/images/download.png");
+        ImageView exportIcon = new ImageView(export);
+        exportIcon.setFitHeight(15);
+        exportIcon.setFitWidth(15);
+        editButton.setGraphic(exportIcon);
+
         contentLabel.getStyleClass().add("label");
         authorLabel.getStyleClass().add("label");
         likesLabel.getStyleClass().add("label");
@@ -157,9 +177,17 @@ public class PostView {
         validationMessage.getStyleClass().add("error-message");
         submitButton.getStyleClass().setAll("submit-button");
         backButton.getStyleClass().setAll("back-button");
+        deleteButton.getStyleClass().setAll("action-button");
+        editButton.getStyleClass().setAll("action-button");
+        exportButton.getStyleClass().setAll("action-button");
 
-        submitButton.setMinWidth(75);
-        backButton.setMinWidth(75);
+        submitButton.setMinWidth(100);
+        backButton.setMinWidth(100);
+        deleteButton.setMinWidth(100);
+        editButton.setMinWidth(100);
+        exportButton.setMinWidth(100);
+        deleteButton.setAlignment(Pos.CENTER);
+        editButton.setAlignment(Pos.CENTER);
         submitButton.setAlignment(Pos.CENTER);
         backButton.setAlignment(Pos.CENTER);
     }

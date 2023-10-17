@@ -107,8 +107,8 @@ public class SubscriptionView {
         submitButton.getStyleClass().setAll("submit-button");
         backButton.getStyleClass().setAll("back-button");
 
-        submitButton.setMinWidth(75);
-        backButton.setMinWidth(75);
+        submitButton.setMinWidth(100);
+        backButton.setMinWidth(100);
         submitButton.setAlignment(Pos.CENTER);
         backButton.setAlignment(Pos.CENTER);
     }

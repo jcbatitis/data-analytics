@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -98,10 +100,11 @@ public class LoginView {
         submitButton.getStyleClass().setAll("submit-button");
         registerButton.getStyleClass().setAll("back-button");
 
-        submitButton.setMinWidth(75);
-        registerButton.setMinWidth(75);
+        submitButton.setMinWidth(100);
+        registerButton.setMinWidth(100);
         submitButton.setAlignment(Pos.CENTER);
         registerButton.setAlignment(Pos.CENTER);
+
     }
 
     /*
