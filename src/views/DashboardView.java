@@ -22,6 +22,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -186,8 +188,8 @@ public class DashboardView {
         sortByPosts.setToggleGroup(sortToggleGroup);
         sortByPosts.setUserData("shares");
 
-        HBox sortControl = new HBox(5, sortField, sortSubmitButton);
-        sortField.setMinWidth(225);
+        HBox sortControl = new HBox(5, sortField);
+        sortField.setMinWidth(180);
         sortToggleGrid.add(sortToggleGroupLabel, 0, 0);
         sortToggleGrid.add(sortOptionsBox, 1, 0);
 
@@ -204,7 +206,10 @@ public class DashboardView {
 
         sortSubmitButton.setMinWidth(80);
 
-        sortVBox.getChildren().addAll(sortHeader, descriptionBox, sortToggleGrid, sortControlGrid);
+        HBox tableControlsRow1 = new HBox(5, sortSubmitButton);
+        tableControlsRow1.setAlignment(Pos.CENTER_RIGHT);
+
+        sortVBox.getChildren().addAll(sortHeader, descriptionBox, sortToggleGrid, sortControlGrid, tableControlsRow1);
         sortVBox.getStyleClass().add("sort-container");
     }
 
@@ -235,6 +240,7 @@ public class DashboardView {
         searchControlGrid.getColumnConstraints().addAll(column1, column2);
 
         HBox tableControlsRow1 = new HBox(5, addButton, refreshButton);
+        tableControlsRow1.setAlignment(Pos.CENTER_RIGHT);
 
         searchVbox.getChildren().addAll(tableHeader, descriptionBox, searchControlGrid, tableControlsRow1);
         searchVbox.getStyleClass().add("sort-container");
@@ -242,7 +248,7 @@ public class DashboardView {
 
     private void setupUserDetailSection() {
         // Description
-        String description = "Hi there, welcome to dashboard analytics hub! This is assignment #4 by Jejomar Batitis. I hope you enjoy your stay cus I want to pass...";
+        String description = "Hi there, welcome to dashboard analytics hub! \nThis is assignment #4 by Jejomar Batitis (S3856624).\nI hope you enjoy your stay cus I want to pass...";
         Label detailDescription = new Label(description);
         detailDescription.setWrapText(true);
         HBox descriptionBox = new HBox(5, detailDescription);
@@ -268,11 +274,15 @@ public class DashboardView {
         HBox tableControlsRow1 = new HBox(5, vipControlsTitle);
         HBox tableControlsRow2 = new HBox(5, vipDescription);
         HBox tableControlsRow3 = new HBox(5, importButton, exportButton, dataVisualisationButton);
+        HBox tableControlsRow4 = new HBox(5, subscribeButton);
+
+        tableControlsRow3.setAlignment(Pos.CENTER_RIGHT);
+        tableControlsRow4.setAlignment(Pos.CENTER_RIGHT);
 
         if (enabled) {
             vipVBox.getChildren().addAll(tableControlsRow1, tableControlsRow2, tableControlsRow3);
         } else {
-            vipVBox.getChildren().addAll(tableControlsRow1, tableControlsRow2, subscribeButton);
+            vipVBox.getChildren().addAll(tableControlsRow1, tableControlsRow2, tableControlsRow4);
         }
         vipVBox.getStyleClass().add("management-container");
     }
@@ -359,24 +369,75 @@ public class DashboardView {
         scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
         validationMessage.getStyleClass().add("error-message");
-        refreshButton.getStyleClass().setAll("management-button");
-        refreshButton.setMinWidth(75);
+
+        Image refresh = new Image("/resources/images/refresh.png");
+        ImageView refreshIcon = new ImageView(refresh);
+        refreshIcon.setFitHeight(15);
+        refreshIcon.setFitWidth(15);
+        refreshButton.setGraphic(refreshIcon);
+
+        Image plus = new Image("/resources/images/plus.png");
+        ImageView plusIcon = new ImageView(plus);
+        plusIcon.setFitHeight(15);
+        plusIcon.setFitWidth(15);
+        addButton.setGraphic(plusIcon);
+
+        Image sort = new Image("/resources/images/sort.png");
+        ImageView sortIcon = new ImageView(sort);
+        sortIcon.setFitHeight(15);
+        sortIcon.setFitWidth(15);
+        sortSubmitButton.setGraphic(sortIcon);
+
+        Image export = new Image("/resources/images/download.png");
+        ImageView exportIcon = new ImageView(export);
+        exportIcon.setFitHeight(15);
+        exportIcon.setFitWidth(15);
+        exportButton.setGraphic(exportIcon);
+
+        Image importImage = new Image("/resources/images/import.png");
+        ImageView importIcon = new ImageView(importImage);
+        importIcon.setFitHeight(15);
+        importIcon.setFitWidth(15);
+        importButton.setGraphic(importIcon);
+
+        Image chart = new Image("/resources/images/chart.png");
+        ImageView chartIcon = new ImageView(chart);
+        chartIcon.setFitHeight(15);
+        chartIcon.setFitWidth(15);
+        dataVisualisationButton.setGraphic(chartIcon);
+
+        Image subscribe = new Image("/resources/images/subscribe.png");
+        ImageView subscribeIcon = new ImageView(subscribe);
+        subscribeIcon.setFitHeight(15);
+        subscribeIcon.setFitWidth(15);
+        subscribeButton.setGraphic(subscribeIcon);
+
+        refreshButton.getStyleClass().setAll("action-button");
+        refreshButton.setMinWidth(100);
         refreshButton.setAlignment(Pos.CENTER);
 
-        addButton.getStyleClass().setAll("management-button");
-        addButton.setMinWidth(75);
+        addButton.getStyleClass().setAll("action-button");
+        addButton.setMinWidth(100);
         addButton.setAlignment(Pos.CENTER);
 
-        importButton.getStyleClass().setAll("management-button");
-        importButton.setMinWidth(75);
+        importButton.getStyleClass().setAll("action-button");
+        importButton.setMinWidth(100);
         importButton.setAlignment(Pos.CENTER);
 
-        exportButton.getStyleClass().setAll("management-button");
-        exportButton.setMinWidth(75);
+        exportButton.getStyleClass().setAll("action-button");
+        exportButton.setMinWidth(100);
         exportButton.setAlignment(Pos.CENTER);
 
-        dataVisualisationButton.getStyleClass().setAll("management-button");
-        dataVisualisationButton.setMinWidth(75);
+        sortSubmitButton.getStyleClass().setAll("action-button");
+        sortSubmitButton.setMinWidth(100);
+        sortSubmitButton.setAlignment(Pos.CENTER);
+
+        subscribeButton.getStyleClass().setAll("action-button");
+        subscribeButton.setMinWidth(100);
+        subscribeButton.setAlignment(Pos.CENTER);
+
+        dataVisualisationButton.getStyleClass().setAll("action-button");
+        dataVisualisationButton.setMinWidth(100);
         dataVisualisationButton.setAlignment(Pos.CENTER);
     }
 

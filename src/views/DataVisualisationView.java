@@ -4,7 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
-
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -51,6 +50,7 @@ public class DataVisualisationView {
         setupHeader();
         setupPieChart();
         setupButtons();
+        setupStyleClasses();
     }
 
     /**
@@ -85,6 +85,14 @@ public class DataVisualisationView {
         VBox vBox = new VBox(10, validationBox, buttonBox);
 
         grid.add(vBox, 0, 2);
+    }
+
+    private void setupStyleClasses() {
+        scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
+
+        backButton.getStyleClass().setAll("back-button");
+        backButton.setMinWidth(100);
+        backButton.setAlignment(Pos.CENTER);
     }
 
     /*
