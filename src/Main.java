@@ -1,3 +1,5 @@
+// This is a test for git hooks
+
 
 import controllers.LoginController;
 import javafx.application.Application;
