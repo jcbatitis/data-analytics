@@ -4,6 +4,7 @@ import main.controllers.LoginController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import main.views.LoginView;
+import sqlite.DatabaseManager;
 
 public class Main extends Application {
 
@@ -21,6 +22,16 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        setupDatabase();
         launch(args);
+    }
+
+    private static void setupDatabase() {
+        DatabaseManager manager = DatabaseManager.getInstance();
+        Boolean databaseExists = manager.initialiseDatabaseIfNotExists();
+
+        if (databaseExists) {
+            System.out.println("[LOG] Database already exists.");
+        }
     }
 }

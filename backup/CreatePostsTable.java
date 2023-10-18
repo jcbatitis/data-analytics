@@ -1,4 +1,4 @@
-package _sqlite;
+package sqlite;
 
 import java.sql.Connection;
 import java.sql.SQLException;

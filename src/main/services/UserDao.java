@@ -105,8 +105,8 @@ public class UserDao implements Dao<User> {
             int result = statement.executeUpdate();
 
             if (result == 1) {
-                System.out.println("Insert into table executed successfully");
-                System.out.println(result + " row(s) affected");
+                System.out.println("[LOG] Insert into table executed successfully");
+                System.out.println("[LOG] " + result + " row(s) affected");
 
                 return true;
             }
@@ -142,8 +142,8 @@ public class UserDao implements Dao<User> {
             int result = statement.executeUpdate();
 
             if (result == 1) {
-                System.out.println("Update into table executed successfully");
-                System.out.println(result + " row(s) affected");
+                System.out.println("[LOG] Update into table executed successfully");
+                System.out.println("[LOG] " + result + " row(s) affected");
 
                 return true;
             } else {
@@ -167,8 +167,8 @@ public class UserDao implements Dao<User> {
             int result = statement.executeUpdate();
 
             if (result == 1) {
-                System.out.println("Deletion from table executed successfully");
-                System.out.println(result + " row(s) affected");
+                System.out.println("[LOG] Deletion from table executed successfully");
+                System.out.println("[LOG] " + result + " row(s) affected");
 
                 return true;
             } else {

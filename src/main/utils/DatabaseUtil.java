@@ -27,6 +27,5 @@ public class DatabaseUtil {
      }
 
       return databaseObject;
-
     }
 }

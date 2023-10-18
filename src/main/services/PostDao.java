@@ -41,7 +41,8 @@ public class PostDao implements Dao<Post> {
                     try {
                         postList.add(new Post(id, content, author, likes, shares, date));
                     } catch (CustomDateTimeParseException e) {
-                        System.out.println(String.format("[Error](getAll) Error parsing datetime of POST with the ID of %s", id));
+                        System.out.println(
+                                String.format("[Error](getAll) Error parsing datetime of POST with the ID of %s", id));
                     }
                 }
 
@@ -115,8 +116,8 @@ public class PostDao implements Dao<Post> {
             int result = statement.executeUpdate();
 
             if (result == 1) {
-                System.out.println("Insert into table executed successfully");
-                System.out.println(result + " row(s) affected");
+                System.out.println("[LOG] Insert into table executed successfully");
+                System.out.println("[LOG] " + result + " row(s) affected");
 
                 return true;
             }
@@ -150,8 +151,8 @@ public class PostDao implements Dao<Post> {
             int result = statement.executeUpdate();
 
             if (result == 1) {
-                System.out.println("Update into table executed successfully");
-                System.out.println(result + " row(s) affected");
+                System.out.println("[LOG] Update into table executed successfully");
+                System.out.println("[LOG] " + result + " row(s) affected");
 
                 return true;
             } else {
@@ -175,8 +176,8 @@ public class PostDao implements Dao<Post> {
             int result = statement.executeUpdate();
 
             if (result == 1) {
-                System.out.println("Deletion from Posts table executed successfully");
-                System.out.println(result + " row(s) affected");
+                System.out.println("[LOG] Deletion from Posts table executed successfully");
+                System.out.println("[LOG] "+result + " row(s) affected");
 
                 return true;
             } else {
@@ -217,7 +218,9 @@ public class PostDao implements Dao<Post> {
                         postList.add(new Post(id, content, author, likes, shares, date));
                     } catch (CustomDateTimeParseException e) {
                         System.out
-                                .println(String.format("[Error](getPostBySearchTerm) Error parsing datetime of POST with the ID of %s", id));
+                                .println(String.format(
+                                        "[Error](getPostBySearchTerm) Error parsing datetime of POST with the ID of %s",
+                                        id));
                     }
                 }
 
