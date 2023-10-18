@@ -6,14 +6,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import utils.GridUtil;
+import utils.StyleUtil;
 
 public class LoginView {
 
@@ -22,7 +21,7 @@ public class LoginView {
     private Scene scene;
 
     // Controls
-    Text sceneTitle = new Text("Dashboard Analytics Hub - S3856624");
+    Text sceneTitle = new Text("Dashboard Analytics Hub");
     Label usernameLabel = new Label("Username");
     Label passwordLabel = new Label("Password");
 
@@ -44,7 +43,7 @@ public class LoginView {
      */
     private void setupLayout() {
         grid = GridUtil.setupCenteredGridSingleColumn();
-        scene = new Scene(grid, 500, 700);
+        scene = new Scene(grid, 500, 350);
         scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
         setupHeader();
@@ -90,21 +89,17 @@ public class LoginView {
 
     private void setupStyleClasses() {
         scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
-        usernameLabel.getStyleClass().add("label");
-        passwordLabel.getStyleClass().add("label");
 
-        usernameField.getStyleClass().add("text-field");
-        passwordField.getStyleClass().add("text-field");
+        Button[] buttons = new Button[] { submitButton, registerButton };
 
-        validationMessage.getStyleClass().add("error-message");
-        submitButton.getStyleClass().setAll("submit-button");
-        registerButton.getStyleClass().setAll("back-button");
+        StyleUtil.setLabelStyleClass(usernameLabel, passwordLabel);
+        StyleUtil.setTextFieldStyleClass(usernameField, passwordField);
 
-        submitButton.setMinWidth(100);
-        registerButton.setMinWidth(100);
-        submitButton.setAlignment(Pos.CENTER);
-        registerButton.setAlignment(Pos.CENTER);
+        StyleUtil.setStyleClasses(buttons,
+                new String[] { "submit-button", "back-button" });
 
+        StyleUtil.setMinWidthAndAlignment(100, Pos.CENTER, buttons);
+        StyleUtil.setStyleClass(validationMessage, "error-message");
     }
 
     /*

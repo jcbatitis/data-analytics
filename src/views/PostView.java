@@ -7,8 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -18,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import utils.GridUtil;
+import utils.StyleUtil;
 
 public class PostView {
 
@@ -79,7 +78,7 @@ public class PostView {
         setupHeader();
         setupPostDetailControls();
         setupButtons();
-        setupStyleClasses();
+        setupControlStyles();
     }
 
     /**
@@ -140,56 +139,29 @@ public class PostView {
         grid.add(hBox, 0, 13);
     }
 
-    private void setupStyleClasses() {
+    private void setupControlStyles() {
         scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
-        Image trash = new Image("/resources/images/trash.png");
-        ImageView trashIcon = new ImageView(trash);
-        trashIcon.setFitHeight(15);
-        trashIcon.setFitWidth(15);
-        deleteButton.setGraphic(trashIcon);
+        Button[] buttons = new Button[] { submitButton, backButton, deleteButton, editButton, exportButton };
 
-        Image edit = new Image("/resources/images/edit.png");
-        ImageView editIcon = new ImageView(edit);
-        editIcon.setFitHeight(15);
-        editIcon.setFitWidth(15);
-        editButton.setGraphic(editIcon);
+        StyleUtil.setupButtonIcon(deleteButton, "/resources/images/trash.png");
+        StyleUtil.setupButtonIcon(editButton, "/resources/images/edit.png");
+        StyleUtil.setupButtonIcon(exportButton, "/resources/images/download.png");
 
-        Image export = new Image("/resources/images/download.png");
-        ImageView exportIcon = new ImageView(export);
-        exportIcon.setFitHeight(15);
-        exportIcon.setFitWidth(15);
-        editButton.setGraphic(exportIcon);
+        StyleUtil.setLabelStyleClass(contentLabel, authorLabel, likesLabel,
+                sharesLabel, dateLabel);
+        StyleUtil.setTextFieldStyleClass(postIdField, contentField, authorField,
+                likesField, sharesField,
+                dateTimeField);
 
-        contentLabel.getStyleClass().add("label");
-        authorLabel.getStyleClass().add("label");
-        likesLabel.getStyleClass().add("label");
-        sharesLabel.getStyleClass().add("label");
-        dateLabel.getStyleClass().add("label");
+        StyleUtil.setStyleClass(validationMessage, "error-message");
+        StyleUtil.setStyleClasses(
+                buttons,
+                new String[] { "submit-button", "back-button",
+                        "action-button", "action-button",
+                        "action-button" });
 
-        postIdField.getStyleClass().add("text-field");
-        contentField.getStyleClass().add("text-field");
-        authorField.getStyleClass().add("text-field");
-        likesField.getStyleClass().add("text-field");
-        sharesField.getStyleClass().add("text-field");
-        dateTimeField.getStyleClass().add("text-field");
-
-        validationMessage.getStyleClass().add("error-message");
-        submitButton.getStyleClass().setAll("submit-button");
-        backButton.getStyleClass().setAll("back-button");
-        deleteButton.getStyleClass().setAll("action-button");
-        editButton.getStyleClass().setAll("action-button");
-        exportButton.getStyleClass().setAll("action-button");
-
-        submitButton.setMinWidth(100);
-        backButton.setMinWidth(100);
-        deleteButton.setMinWidth(100);
-        editButton.setMinWidth(100);
-        exportButton.setMinWidth(100);
-        deleteButton.setAlignment(Pos.CENTER);
-        editButton.setAlignment(Pos.CENTER);
-        submitButton.setAlignment(Pos.CENTER);
-        backButton.setAlignment(Pos.CENTER);
+        StyleUtil.setMinWidthAndAlignment(100, Pos.CENTER, buttons);
     }
 
     /*

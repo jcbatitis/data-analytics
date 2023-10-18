@@ -9,10 +9,10 @@ import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
 import exceptions.FilePathRequiredException;
 import exceptions.InvalidFormSubmissionException;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import models.Post;
 import models.User;
 import services.PostDao;
@@ -170,12 +170,28 @@ public class PostController {
             Boolean job = dao.create(payload);
 
             if (job) {
-
-                DashboardView view = new DashboardView();
                 view.toggleValidationMessageClass(true);
                 view.setValidationMessage("Post created successfully.");
 
-                setupDashboardView(view, user);
+                Post post = payload;
+
+                PostView view = new PostView();
+                PostController controller = new PostController(view);
+
+                view.setTitle("Data Analytics Hub - Update Post Details");
+                view.setHeader("Update Post Details");
+
+                controller.setUser(user);
+                controller.setPost(post);
+                controller.setPrimaryStage(primaryStage);
+
+                PauseTransition pause = new PauseTransition(Duration.seconds(3));
+                pause.setOnFinished(event -> {
+                    primaryStage.setTitle(view.getTitle());
+                    primaryStage.setScene(view.getScene());
+                });
+
+                pause.play();
             }
         } catch (EntityAlreadyExistsException e) {
             view.toggleValidationMessageClass(false);
@@ -197,6 +213,8 @@ public class PostController {
                 view.getExportButton().setDisable(false);
                 view.getDeleteButton().setDisable(false);
                 view.getSubmitButton().setDisable(true);
+                view.disableFormControls(true);
+
                 view.setValidationMessage("Post updated successfully!");
             }
         } catch (EntityNotFoundException e) {

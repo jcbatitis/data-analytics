@@ -22,8 +22,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -37,13 +35,11 @@ import javafx.scene.text.Text;
 import models.Post;
 import utils.GlobalUtil;
 import utils.GridUtil;
+import utils.StyleUtil;
 
 public class DashboardView {
 
     // Layout
-    private GridPane searchGrid = GridUtil.setupNoPaddingGrid();
-    private GridPane sortGrid = GridUtil.setupNoPaddingGrid();
-
     private Scene scene;
     private VBox parentVBox = new VBox(10);
 
@@ -118,7 +114,7 @@ public class DashboardView {
         setupUserDetailSection();
         setupPostsTable();
 
-        scene = new Scene(root, 900, 800);
+        scene = new Scene(root, 950, 800);
         scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
         ColumnConstraints column1 = new ColumnConstraints();
@@ -248,7 +244,7 @@ public class DashboardView {
 
     private void setupUserDetailSection() {
         // Description
-        String description = "Hi there, welcome to dashboard analytics hub! \nThis is assignment #4 by Jejomar Batitis (S3856624).\nI hope you enjoy your stay cus I want to pass...";
+        String description = "Hi there, welcome to dashboard analytics hub!\nAdvaced Further Programming: Assignment #4\nStudent ID: S3856624\nJejomar Batitis";
         Label detailDescription = new Label(description);
         detailDescription.setWrapText(true);
         HBox descriptionBox = new HBox(5, detailDescription);
@@ -312,13 +308,13 @@ public class DashboardView {
 
         table.getColumns().setAll(columns);
 
-        selectColumn.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
-        id.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
-        content.prefWidthProperty().bind(table.widthProperty().multiply(0.4));
-        author.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
-        likes.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
-        shares.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
-        dateTime.prefWidthProperty().bind(table.widthProperty().multiply(0.1));
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        id.prefWidthProperty().bind(table.widthProperty().divide(7));
+        content.prefWidthProperty().bind(table.widthProperty().divide(7));
+        author.prefWidthProperty().bind(table.widthProperty().divide(7));
+        likes.prefWidthProperty().bind(table.widthProperty().divide(7));
+        shares.prefWidthProperty().bind(table.widthProperty().divide(7));
+        dateTime.prefWidthProperty().bind(table.widthProperty().divide(7));
 
         for (TableColumn<Post, ?> column : columns) {
             column.setResizable(false);
@@ -368,77 +364,20 @@ public class DashboardView {
     private void setupStyleClasses() {
         scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
-        validationMessage.getStyleClass().add("error-message");
+        StyleUtil.setStyleClass(validationMessage, "error-message");
+        StyleUtil.setupButtonIcon(refreshButton, "/resources/images/refresh.png");
+        StyleUtil.setupButtonIcon(addButton, "/resources/images/plus.png");
+        StyleUtil.setupButtonIcon(sortSubmitButton, "/resources/images/sort.png");
+        StyleUtil.setupButtonIcon(exportButton, "/resources/images/download.png");
+        StyleUtil.setupButtonIcon(importButton, "/resources/images/import.png");
+        StyleUtil.setupButtonIcon(dataVisualisationButton, "/resources/images/chart.png");
+        StyleUtil.setupButtonIcon(subscribeButton, "/resources/images/subscribe.png");
 
-        Image refresh = new Image("/resources/images/refresh.png");
-        ImageView refreshIcon = new ImageView(refresh);
-        refreshIcon.setFitHeight(15);
-        refreshIcon.setFitWidth(15);
-        refreshButton.setGraphic(refreshIcon);
+        Button[] buttons = new Button[] { refreshButton, addButton, sortSubmitButton, exportButton, importButton,
+                dataVisualisationButton, subscribeButton };
 
-        Image plus = new Image("/resources/images/plus.png");
-        ImageView plusIcon = new ImageView(plus);
-        plusIcon.setFitHeight(15);
-        plusIcon.setFitWidth(15);
-        addButton.setGraphic(plusIcon);
-
-        Image sort = new Image("/resources/images/sort.png");
-        ImageView sortIcon = new ImageView(sort);
-        sortIcon.setFitHeight(15);
-        sortIcon.setFitWidth(15);
-        sortSubmitButton.setGraphic(sortIcon);
-
-        Image export = new Image("/resources/images/download.png");
-        ImageView exportIcon = new ImageView(export);
-        exportIcon.setFitHeight(15);
-        exportIcon.setFitWidth(15);
-        exportButton.setGraphic(exportIcon);
-
-        Image importImage = new Image("/resources/images/import.png");
-        ImageView importIcon = new ImageView(importImage);
-        importIcon.setFitHeight(15);
-        importIcon.setFitWidth(15);
-        importButton.setGraphic(importIcon);
-
-        Image chart = new Image("/resources/images/chart.png");
-        ImageView chartIcon = new ImageView(chart);
-        chartIcon.setFitHeight(15);
-        chartIcon.setFitWidth(15);
-        dataVisualisationButton.setGraphic(chartIcon);
-
-        Image subscribe = new Image("/resources/images/subscribe.png");
-        ImageView subscribeIcon = new ImageView(subscribe);
-        subscribeIcon.setFitHeight(15);
-        subscribeIcon.setFitWidth(15);
-        subscribeButton.setGraphic(subscribeIcon);
-
-        refreshButton.getStyleClass().setAll("action-button");
-        refreshButton.setMinWidth(100);
-        refreshButton.setAlignment(Pos.CENTER);
-
-        addButton.getStyleClass().setAll("action-button");
-        addButton.setMinWidth(100);
-        addButton.setAlignment(Pos.CENTER);
-
-        importButton.getStyleClass().setAll("action-button");
-        importButton.setMinWidth(100);
-        importButton.setAlignment(Pos.CENTER);
-
-        exportButton.getStyleClass().setAll("action-button");
-        exportButton.setMinWidth(100);
-        exportButton.setAlignment(Pos.CENTER);
-
-        sortSubmitButton.getStyleClass().setAll("action-button");
-        sortSubmitButton.setMinWidth(100);
-        sortSubmitButton.setAlignment(Pos.CENTER);
-
-        subscribeButton.getStyleClass().setAll("action-button");
-        subscribeButton.setMinWidth(100);
-        subscribeButton.setAlignment(Pos.CENTER);
-
-        dataVisualisationButton.getStyleClass().setAll("action-button");
-        dataVisualisationButton.setMinWidth(100);
-        dataVisualisationButton.setAlignment(Pos.CENTER);
+        StyleUtil.setStyleClasses(buttons, "action-button");
+        StyleUtil.setMinWidthAndAlignment(100, Pos.CENTER, buttons);
     }
 
     /*

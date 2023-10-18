@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import utils.GridUtil;
+import utils.StyleUtil;
 
 public class UserView {
 
@@ -69,7 +70,7 @@ public class UserView {
         setupPersonalDetailControls();
         setupAccountDetailControls();
         setupButtons();
-        setupStyleClasses();
+        setupControlStyles();
     }
 
     /**
@@ -126,29 +127,21 @@ public class UserView {
         grid.add(vBox, 0, 14);
     }
 
-    private void setupStyleClasses() {
+    private void setupControlStyles() {
         scene.getStylesheets().add(getClass().getResource("/resources/style.css").toExternalForm());
 
-        firstNameLabel.getStyleClass().add("label");
-        lastNameLabel.getStyleClass().add("label");
-        usernameLabel.getStyleClass().add("label");
-        passwordLabel.getStyleClass().add("label");
-        confirmPasswordLabel.getStyleClass().add("label");
+        Button[] buttons = new Button[] { submitButton, backButton };
 
-        firstNameField.getStyleClass().add("text-field");
-        lastNameField.getStyleClass().add("text-field");
-        usernameField.getStyleClass().add("text-field");
-        passwordField.getStyleClass().add("text-field");
-        confirmPasswordField.getStyleClass().add("text-field");
-
-        validationMessage.getStyleClass().add("error-message");
-        submitButton.getStyleClass().setAll("submit-button");
-        backButton.getStyleClass().setAll("back-button");
-
-        submitButton.setMinWidth(100);
-        backButton.setMinWidth(100);
-        submitButton.setAlignment(Pos.CENTER);
-        backButton.setAlignment(Pos.CENTER);
+        StyleUtil.setStyleClasses(
+                new Label[] { firstNameLabel, lastNameLabel, usernameLabel, passwordLabel, confirmPasswordLabel },
+                "label");
+        StyleUtil.setStyleClasses(
+                new TextField[] { firstNameField, lastNameField, usernameField, passwordField, confirmPasswordField },
+                "text-field");
+        StyleUtil.setStyleClasses(buttons,
+                new String[] { "submit-button", "back-button" });
+        StyleUtil.setStyleClass(validationMessage, "error-message");
+        StyleUtil.setMinWidthAndAlignment(100, Pos.CENTER, buttons);
     }
 
     /*
@@ -209,7 +202,6 @@ public class UserView {
     /*
      * SETTERS
      */
-
     public void setTitle(String title) {
         this.title.setText(title);
     }

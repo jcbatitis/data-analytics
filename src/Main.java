@@ -14,6 +14,7 @@ public class Main extends Application {
 
         primaryStage.setTitle("Data Analytics Hub - Login");
         primaryStage.setScene(view.getScene());
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
