@@ -241,7 +241,7 @@ public class DashboardView {
 
     private void setupUserDetailSection() {
         // Description
-        String description = "Hi there, welcome to dashboard analytics hub!\nAdvaced Further Programming: Assignment #4\nStudent ID: S3856624\nJejomar Batitis";
+        String description = "Hi there, welcome to dashboard analytics hub!\nAdvaced Further Programming: Assignment #2\nStudent ID: S3856624\nJejomar Batitis";
         Label detailDescription = new Label(description);
         detailDescription.setWrapText(true);
         HBox descriptionBox = new HBox(5, detailDescription);
