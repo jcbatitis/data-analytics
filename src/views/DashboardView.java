@@ -33,7 +33,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import models.Post;
-import utils.GlobalUtil;
 import utils.GridUtil;
 import utils.StyleUtil;
 
@@ -149,22 +148,20 @@ public class DashboardView {
     }
 
     private void setupHeader() {
-        header.setFont(GlobalUtil.getHeaderFont());
+        header.setFont(StyleUtil.getHeaderFont());
     }
 
     private void setupSortSection() {
         // Header
         Text sortTitle = new Text("FILTER");
         HBox sortHeader = new HBox(5, toggleSortSection, sortTitle);
-        sortTitle.setFont(GlobalUtil.getSubHeaderFont());
+        sortTitle.setFont(StyleUtil.getSubHeaderFont());
 
         // Description
         String description = "To sort, select an option below then enter the number of entries.";
         Label filterDescription = new Label(description);
         filterDescription.setWrapText(true);
         HBox descriptionBox = new HBox(5, filterDescription);
-
-        // sortSection.getChildren().addAll(sortHeader, filterDescription);
 
         // Toggle Buttons
         GridPane sortToggleGrid = GridUtil.setupNoPaddingGrid();
@@ -213,7 +210,7 @@ public class DashboardView {
         // Header
         Text tableTitle = new Text("TABLE");
         HBox tableHeader = new HBox(5, tableTitle);
-        tableTitle.setFont(GlobalUtil.getSubHeaderFont());
+        tableTitle.setFont(StyleUtil.getSubHeaderFont());
 
         // Description
         String description = "To search, just type in a term and it will give you its results.";
@@ -255,7 +252,7 @@ public class DashboardView {
 
     public void setupVipControlSection(Boolean enabled) {
         Text vipControlsTitle = new Text("MANAGEMENT");
-        vipControlsTitle.setFont(GlobalUtil.getSubHeaderFont());
+        vipControlsTitle.setFont(StyleUtil.getSubHeaderFont());
 
         String description = !enabled
                 ? "To gain access to import/export tools, and the comprehensive report viewer. Subscribe to our VIP subscription."
@@ -330,7 +327,7 @@ public class DashboardView {
         HBox.setHgrow(region, Priority.ALWAYS);
 
         Text postTitle = new Text("DASHBOARD");
-        postTitle.setFont(GlobalUtil.getSubHeaderFont());
+        postTitle.setFont(StyleUtil.getSubHeaderFont());
 
         HBox tableControls = new HBox(5, postTitle, region, validationMessage);
         tableControls.setAlignment((Pos.CENTER_RIGHT));
@@ -511,21 +508,3 @@ public class DashboardView {
         }
     }
 }
-
-// Refresh
-// try {
-// // refreshButton.setPrefSize(50, 50);
-// // FileInputStream input = new
-// // FileInputStream("src/resources/images/refresh.png");
-
-// // Image image = new Image(input);
-// // ImageView imageView = new ImageView(image);
-// // imageView.setPreserveRatio(true);
-
-// // // imageView.fitWidthProperty().bind(refreshButton.widthProperty());
-// // // imageView.fitHeightProperty().bind(refreshButton.heightProperty());
-// // refreshButton.setGraphic(imageView);
-
-// } catch (FileNotFoundException e) {
-// e.printStackTrace();
-// }

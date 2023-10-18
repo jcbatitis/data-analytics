@@ -54,9 +54,9 @@ public class PostController {
         view.getSubmitButton().setOnAction(this::submitHandler);
         view.getBackButton().setOnAction(this::backHandler);
         view.getLikesField().textProperty()
-                .addListener(GlobalUtil.numericHandler(view.getLikesField()));
+                .addListener(GlobalUtil.validateIntegers(view.getLikesField()));
         view.getSharesField().textProperty()
-                .addListener(GlobalUtil.numericHandler(view.getSharesField()));
+                .addListener(GlobalUtil.validateIntegers(view.getSharesField()));
     }
 
     public void setPost(Post post) {
@@ -228,7 +228,7 @@ public class PostController {
 
     private void deleteHandler(ActionEvent event) {
         try {
-            Boolean job = dao.delete(post);
+            Boolean job = dao.delete(post.getId());
             if (job) {
                 DashboardView view = new DashboardView();
                 view.toggleValidationMessageClass(true);

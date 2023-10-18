@@ -7,8 +7,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public final class StyleUtil {
+
+    public static Font getHeaderFont() {
+        return Font.font("Calibri", FontWeight.BOLD, 20);
+    }
+
+    public static Font getSubHeaderFont() {
+        return Font.font("Calibri", FontWeight.BOLD, 16);
+    }
+
     public static void setupButtonIcon(Button button, String iconPath) {
         Image icon = new Image(iconPath);
         ImageView iconView = new ImageView(icon);

@@ -166,11 +166,11 @@ public class PostDao implements Dao<Post> {
     }
 
     @Override
-    public Boolean delete(Post post) throws EntityNotFoundException {
+    public Boolean delete(String id) throws EntityNotFoundException {
         String query = "DELETE FROM Posts WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, post.getId());
+            statement.setString(1, id);
 
             int result = statement.executeUpdate();
 
@@ -181,7 +181,7 @@ public class PostDao implements Dao<Post> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error](delete) Failed to delete post as POST ID: %s does not exist", post.getId()));
+                        String.format("[Error](delete) Failed to delete post as POST ID: %s does not exist", id));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -203,8 +203,6 @@ public class PostDao implements Dao<Post> {
             for (int i = 1; i <= 6; i++) {
                 statement.setString(i, "%" + searchTerm + "%");
             }
-
-            // statement.setString(1, "%" + searchTerm + "%");
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {

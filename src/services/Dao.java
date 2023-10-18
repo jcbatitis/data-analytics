@@ -16,5 +16,5 @@ public interface Dao<T> {
 
     Boolean update(T t) throws EntityNotFoundException;
 
-    Boolean delete(T t) throws EntityNotFoundException;
+    Boolean delete(String id) throws EntityNotFoundException;
 }

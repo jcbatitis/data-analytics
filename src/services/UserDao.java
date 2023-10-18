@@ -50,7 +50,7 @@ public class UserDao implements Dao<User> {
 
     @Override
     public User get(String userId) throws EntityNotFoundException {
-        String query = "SELECT * FROM Users WHERE userId = ?";
+        String query = "SELECT * FROM Users WHERE user_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, userId);
@@ -67,7 +67,7 @@ public class UserDao implements Dao<User> {
                     return new User(id, first_name, last_name, username, password, is_vip);
                 } else {
                     throw new EntityNotFoundException(
-                            String.format("[Error] Failed to get user as USER ID: %s does not exist", userId));
+                            String.format("[Error](get) Failed to get user as USER ID: %s does not exist", userId));
                 }
 
             }
@@ -82,11 +82,12 @@ public class UserDao implements Dao<User> {
             throws EntityAlreadyExistsException {
 
         for (User existingUser : getAll()) {
-            String userId = user.getUserId();
+            String username = user.getUsername();
 
-            if (existingUser.getUserId().equals(userId)) {
+            if (existingUser.getUsername().equals(username)) {
                 throw new EntityAlreadyExistsException(
-                        String.format("[Error] Failed to insert user as USER ID: %s already exists", userId));
+                        String.format("[Error](create) Failed to insert user as username: %s already exists",
+                                username));
             }
         }
 
@@ -147,7 +148,8 @@ public class UserDao implements Dao<User> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error] Failed to update user as USER ID: %s does not exist", user.getUserId()));
+                        String.format("[Error](update) Failed to update user as USER ID: %s does not exist",
+                                user.getUserId()));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -156,11 +158,11 @@ public class UserDao implements Dao<User> {
     }
 
     @Override
-    public Boolean delete(User user) throws EntityNotFoundException {
+    public Boolean delete(String id) throws EntityNotFoundException {
         String query = "DELETE FROM Users WHERE user_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, user.getUserId());
+            statement.setString(1, id);
 
             int result = statement.executeUpdate();
 
@@ -171,7 +173,8 @@ public class UserDao implements Dao<User> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error] Failed to delete user as USER ID: %s does not exist", user.getUserId()));
+                        String.format("[Error](delete) Failed to delete user as USER ID: %s does not exist",
+                                id));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -197,7 +200,7 @@ public class UserDao implements Dao<User> {
                     return new User(id, first_name, last_name, username, password, is_vip);
                 } else {
                     throw new EntityNotFoundException(
-                            String.format("[Error] Username or password is incorrect"));
+                            String.format("[Error](checkUserIfValid) Username or password is incorrect"));
                 }
             }
         } catch (SQLException e) {
@@ -235,7 +238,8 @@ public class UserDao implements Dao<User> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error] Failed to update user as USER ID: %s does not exist", user.getUserId()));
+                        String.format("[Error](updateRole) Failed to update user as USER ID: %s does not exist",
+                                user.getUserId()));
             }
         } catch (SQLException e) {
             e.printStackTrace();

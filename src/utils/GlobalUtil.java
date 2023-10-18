@@ -8,8 +8,6 @@ import exceptions.CustomDateTimeParseException;
 import exceptions.InvalidFormSubmissionException;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 public final class GlobalUtil {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -34,15 +32,7 @@ public final class GlobalUtil {
         }
     }
 
-    public static Font getHeaderFont() {
-        return Font.font("Calibri", FontWeight.BOLD, 20);
-    }
-
-    public static Font getSubHeaderFont() {
-        return Font.font("Calibri", FontWeight.BOLD, 16);
-    }
-
-    public static ChangeListener<String> numericHandler(TextField textField) {
+    public static ChangeListener<String> validateIntegers(TextField textField) {
         return (observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 textField.setText(newValue.replaceAll("[^\\d]", ""));

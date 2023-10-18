@@ -1,41 +1,42 @@
 package tests;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.FileNotFoundException;
-import java.sql.Connection;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 
 import exceptions.CustomDateTimeParseException;
+import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
 import models.Post;
 import services.PostDao;
-import utils.DatabaseUtil;
 
 public class PostTest {
-    private Connection connection;
     private PostDao dao;
 
     @Before
     public void setup() {
-        DatabaseUtil db = DatabaseUtil.getInstance();
-        connection = db.getConnection();
         dao = new PostDao();
+
+        try {
+            Post testPost1 = new Post("459", "This is a sample content.", "Albert", 5, 10, "10/10/2010 00:10");
+            dao.create(testPost1);
+        } catch (CustomDateTimeParseException e) {
+        } catch (EntityAlreadyExistsException e) {
+        }
     }
 
     @Test
-    public void testPostCreation() throws Exception {
-        Post testPost1 = new Post("123", "This is a sample content.", "Albert", 5, 10, "10/10/10 10:10");
-        Post testPost2 = new Post("123", "This is a sample content.", "Albert", 5, 10, "10/10/2010 24:10");
+    public void testPostCreationInvalidId() throws Exception {
+        Post testPost1 = new Post("458", "This is a sample content.", "Albert", 5, 10, "10/10/2010 10:10");
+        Post testPost2 = new Post("459", "This is a sample content.", "Albert", 5, 10, "10/10/2010 00:10");
 
-        assertAll(() -> assertFalse(dao.create(testPost1)), () -> assertFalse(dao.create(testPost2)));
+        assertAll("Post creation should fail as provided ID is already existing.",
+                () -> assertThrows(EntityAlreadyExistsException.class, () -> dao.create(testPost1)),
+                () -> assertThrows(EntityAlreadyExistsException.class, () -> dao.create(testPost2)));
+
     }
 
     @Test(expected = CustomDateTimeParseException.class)
@@ -43,6 +44,22 @@ public class PostTest {
         Post testPost1 = new Post("123", "This is a sample content.", "Albert", 5, 10, "10/10/10 10:10");
         Post testPost2 = new Post("123", "This is a sample content.", "Albert", 5, 10, "10/10/2010 24:10");
 
-        assertAll(() -> assertFalse(dao.create(testPost1)), () -> assertFalse(dao.create(testPost2)));
+        assertAll("Post creation should fail as provided date time is invalid format.",
+                () -> assertFalse(dao.create(testPost1)),
+                () -> assertFalse(dao.create(testPost2)));
+    }
+
+    @Test
+    public void testDeletePostWithNotExistingPost() {
+        String id = "999";
+        assertThrows(EntityNotFoundException.class, () -> dao.delete(id),
+                "Delete post should return unsucessful as the post does not exist.");
+    }
+
+    @Test
+    public void testGetPostWithNotExistingPost() {
+        String id = "999";
+        assertThrows(EntityNotFoundException.class, () -> dao.get(id),
+                "Get post details should return unsucessful as the post does not exist.");
     }
 }

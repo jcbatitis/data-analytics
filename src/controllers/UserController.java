@@ -64,7 +64,6 @@ public class UserController {
 
         view.getBackButton().setText("Back to Dashboard");
         view.getSubmitButton().setText("Update");
-        // view.getUsernameField().setDisable(true);
         view.getVipGrid().setVisible(true);
     }
 

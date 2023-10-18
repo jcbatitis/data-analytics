@@ -97,7 +97,7 @@ public class DashboardController {
         view.getSortButton().setOnAction(this::sortHandler);
 
         view.getSearchField().textProperty().addListener((o, oldValue, newValue) -> searchDelay.playFromStart());
-        view.getSortField().textProperty().addListener(GlobalUtil.numericHandler(view.getSortField()));
+        view.getSortField().textProperty().addListener(GlobalUtil.validateIntegers(view.getSortField()));
 
         view.setupSelectButtonEventHandler(event -> {
             Button clickedButton = (Button) event.getSource();
