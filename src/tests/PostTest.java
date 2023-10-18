@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.Before;
 import org.junit.Test;
 
-import exceptions.CustomDateTimeParseException;
-import exceptions.EntityAlreadyExistsException;
-import exceptions.EntityNotFoundException;
-import models.Post;
-import services.PostDao;
+import main.exceptions.CustomDateTimeParseException;
+import main.exceptions.EntityAlreadyExistsException;
+import main.exceptions.EntityNotFoundException;
+import main.models.Post;
+import main.services.PostDao;
 
 public class PostTest {
     private PostDao dao;

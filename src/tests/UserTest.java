@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.Before;
 import org.junit.Test;
 
-import exceptions.EntityAlreadyExistsException;
-import exceptions.EntityNotFoundException;
-import models.User;
-import services.UserDao;
+import main.exceptions.EntityAlreadyExistsException;
+import main.exceptions.EntityNotFoundException;
+import main.models.User;
+import main.services.UserDao;
 
 public class UserTest {
     private UserDao dao;
