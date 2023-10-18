@@ -34,10 +34,6 @@ public class LoginController {
 
         view.getSubmitButton().setOnAction(this::submitHandler);
         view.getRegisterButton().setOnAction(this::registerHandler);
-
-        view.setUsername("ruff");
-        view.setPassword("ruff");
-
     }
 
     /**
