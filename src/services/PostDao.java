@@ -7,10 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import exceptions.CustomDateTimeParseException;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
 import models.Post;
 import utils.DatabaseUtil;
+import utils.GlobalUtil;
 
 public class PostDao implements Dao<Post> {
     private Connection connection;
@@ -36,7 +38,11 @@ public class PostDao implements Dao<Post> {
                     int shares = resultSet.getInt("shares");
                     String date = resultSet.getString("date_time");
 
-                    postList.add(new Post(id, content, author, likes, shares, date));
+                    try {
+                        postList.add(new Post(id, content, author, likes, shares, date));
+                    } catch (CustomDateTimeParseException e) {
+                        System.out.println(String.format("[Error](getAll) Error parsing datetime of POST with the ID of %s", id));
+                    }
                 }
 
                 return postList;
@@ -48,7 +54,7 @@ public class PostDao implements Dao<Post> {
     }
 
     @Override
-    public Post get(String postId) throws EntityNotFoundException {
+    public Post get(String postId) throws EntityNotFoundException, CustomDateTimeParseException {
         String query = "SELECT * FROM Posts " +
                 "WHERE id = ?";
 
@@ -67,7 +73,7 @@ public class PostDao implements Dao<Post> {
                     return new Post(id, content, author, likes, shares, date);
                 } else {
                     throw new EntityNotFoundException(
-                            String.format("[Error] Failed to get post as POST ID: %s does not exist", postId));
+                            String.format("[Error](get) Failed to get post as POST ID: %s does not exist", postId));
                 }
             }
         } catch (SQLException e) {
@@ -78,16 +84,23 @@ public class PostDao implements Dao<Post> {
 
     @Override
     public Boolean create(Post post)
-            throws EntityAlreadyExistsException {
+            throws EntityAlreadyExistsException, CustomDateTimeParseException {
+
+        try {
+            GlobalUtil.validateDateControl(post.getDateTime());
+        } catch (CustomDateTimeParseException e) {
+            return false;
+        }
 
         for (Post existingPost : getAll()) {
             String postId = post.getId();
 
             if (existingPost.getId().equals(postId)) {
                 throw new EntityAlreadyExistsException(
-                        String.format("[Error] Failed to insert post as POST ID: %s already exists", postId));
+                        String.format("[Error](create) Failed to insert post as POST ID: %s already exists", postId));
             }
         }
+
         String query = "INSERT INTO Posts" +
                 " VALUES (?,?,?,?,?,?)";
 
@@ -143,7 +156,8 @@ public class PostDao implements Dao<Post> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error] Failed to update postser as POST ID: %s does not exist", post.getId()));
+                        String.format("[Error](update) Failed to update postser as POST ID: %s does not exist",
+                                post.getId()));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -167,7 +181,7 @@ public class PostDao implements Dao<Post> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error] Failed to delete post as POST ID: %s does not exist", post.getId()));
+                        String.format("[Error](delete) Failed to delete post as POST ID: %s does not exist", post.getId()));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -175,7 +189,7 @@ public class PostDao implements Dao<Post> {
         }
     }
 
-    public List<Post> getPostsBySearchTerm(String searchTerm) {
+    public List<Post> getPostsBySearchTerm(String searchTerm) throws CustomDateTimeParseException {
         List<Post> postList = new ArrayList<Post>();
         String query = "SELECT * FROM Posts " +
                 "WHERE id LIKE ? " +
@@ -201,7 +215,12 @@ public class PostDao implements Dao<Post> {
                     int shares = resultSet.getInt("shares");
                     String date = resultSet.getString("date_time");
 
-                    postList.add(new Post(id, content, author, likes, shares, date));
+                    try {
+                        postList.add(new Post(id, content, author, likes, shares, date));
+                    } catch (CustomDateTimeParseException e) {
+                        System.out
+                                .println(String.format("[Error](getPostBySearchTerm) Error parsing datetime of POST with the ID of %s", id));
+                    }
                 }
 
                 return postList;
@@ -212,7 +231,7 @@ public class PostDao implements Dao<Post> {
         }
     }
 
-    public List<Post> getPostsById(String postId) {
+    public List<Post> getPostsById(String postId) throws CustomDateTimeParseException {
         List<Post> postList = new ArrayList<Post>();
         String query = "SELECT * FROM Posts " +
                 "WHERE id LIKE ?";

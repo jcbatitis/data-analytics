@@ -2,16 +2,17 @@ package services;
 
 import java.util.List;
 
+import exceptions.CustomDateTimeParseException;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.EntityNotFoundException;
 
 public interface Dao<T> {
 
-    List<T> getAll();
+    List<T> getAll() throws CustomDateTimeParseException;
 
-    T get(String id) throws EntityNotFoundException;
+    T get(String id) throws EntityNotFoundException, CustomDateTimeParseException;
 
-    Boolean create(T t) throws EntityAlreadyExistsException;
+    Boolean create(T t) throws EntityAlreadyExistsException, CustomDateTimeParseException;
 
     Boolean update(T t) throws EntityNotFoundException;
 

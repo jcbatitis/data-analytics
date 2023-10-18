@@ -1,7 +1,9 @@
 package models;
 
+import exceptions.CustomDateTimeParseException;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import utils.GlobalUtil;
 
 public class Post {
     private String id;
@@ -13,13 +15,16 @@ public class Post {
 
     private final BooleanProperty selected = new SimpleBooleanProperty(false);
 
-    public Post(String id, String content, String author, Integer likes, Integer shares, String dateTime) {
+    public Post(String id, String content, String author, Integer likes, Integer shares, String dateTime)
+            throws CustomDateTimeParseException {
         this.id = id;
         this.content = content;
         this.author = author;
         this.likes = likes;
         this.shares = shares;
         this.dateTime = dateTime;
+
+        GlobalUtil.validateDateControl(dateTime);
     }
 
     public String getId() {

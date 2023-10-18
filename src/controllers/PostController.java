@@ -165,7 +165,7 @@ public class PostController {
      * 
      * @param payload object user to be created
      */
-    private void createPost(Post payload) {
+    public void createPost(Post payload) {
         try {
             Boolean job = dao.create(payload);
 
@@ -193,6 +193,9 @@ public class PostController {
 
                 pause.play();
             }
+        } catch (CustomDateTimeParseException e) {
+            view.toggleValidationMessageClass(false);
+            view.setValidationMessage(e.getMessage());
         } catch (EntityAlreadyExistsException e) {
             view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());

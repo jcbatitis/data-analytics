@@ -4,5 +4,6 @@
   "java.project.referencedLibraries": ["lib/**/*.jar"],
   "java.test.config": {
     "workingDirectory": "${workspaceFolder}"
-  }
+  },
+  "java.debug.settings.onBuildFailureProceed": true
 }

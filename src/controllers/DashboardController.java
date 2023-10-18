@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import exceptions.CustomDateTimeParseException;
 import exceptions.EntityAlreadyExistsException;
 import exceptions.FilePathRequiredException;
 import javafx.animation.PauseTransition;
@@ -144,12 +145,9 @@ public class DashboardController {
      * @param event event handler variable
      */
     private void refreshHandler(ActionEvent event) {
-        ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
-        setTableItems(posts);
-
+        setupDefaultPosts();
         view.getSearchField().setText("");
         view.getSortField().setText("");
-
     }
 
     /**
@@ -216,7 +214,7 @@ public class DashboardController {
         primaryStage.show();
     }
 
-    private void searchHandler(ActionEvent e) {
+    private void searchHandler(ActionEvent exception) {
         String searchBy = "term";
         String searchTerm = view.getSearchTerm();
 
@@ -227,20 +225,26 @@ public class DashboardController {
         view.getToggleSortSection().setSelected(false);
         toggleSortSectionHandler();
 
-        if (searchBy == "term") {
-            ObservableList<Post> posts = FXCollections.observableArrayList(dao.getPostsBySearchTerm(searchTerm));
-            setTableItems(posts);
-        }
+        try {
+            if (searchBy == "term") {
+                ObservableList<Post> posts = FXCollections.observableArrayList(dao.getPostsBySearchTerm(searchTerm));
+                setTableItems(posts);
+            }
 
-        else if (searchBy == "postId") {
-            ObservableList<Post> posts = FXCollections.observableArrayList(dao.getPostsById(searchTerm));
-            setTableItems(posts);
+            else if (searchBy == "postId") {
+                ObservableList<Post> posts = FXCollections.observableArrayList(dao.getPostsById(searchTerm));
+                setTableItems(posts);
+            }
+        } catch (CustomDateTimeParseException e) {
+            view.toggleValidationMessageClass(false);
+            view.setValidationMessage(e.getMessage());
         }
     }
 
-    private void sortHandler(ActionEvent e) {
+    private void sortHandler(ActionEvent exception) {
         String sortBy = view.getSortToggleGroupValue();
         Integer limitValue = view.getSortValue();
+
         ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
 
         if (limitValue == null) {
@@ -261,7 +265,7 @@ public class DashboardController {
         }
     }
 
-    private void dataVisualisationHandler(ActionEvent e) {
+    private void dataVisualisationHandler(ActionEvent event) {
         ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
 
         DataVisualisationView view = new DataVisualisationView();
@@ -348,15 +352,18 @@ public class DashboardController {
             } catch (IOException e) {
                 view.toggleValidationMessageClass(false);
                 view.setValidationMessage(e.getMessage());
+            } catch (CustomDateTimeParseException e) {
+                view.toggleValidationMessageClass(false);
+                view.setValidationMessage(e.getMessage());
             } catch (EntityAlreadyExistsException e) {
                 view.toggleValidationMessageClass(false);
                 view.setValidationMessage(e.getMessage());
             } finally {
-                ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
-                setTableItems(posts);
+                setupDefaultPosts();
             }
 
         } catch (FilePathRequiredException e) {
+            view.setValidationMessage(e.getMessage());
             view.setValidationMessage(e.getMessage());
         } finally {
             view.getImportButton().setDisable(false);
