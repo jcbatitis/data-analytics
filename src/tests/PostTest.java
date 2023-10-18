@@ -21,7 +21,7 @@ public class PostTest {
         dao = new PostDao();
 
         try {
-            Post testPost1 = new Post("459", "This is a sample content.", "Albert", 5, 10, "10/10/2010 00:10");
+            Post testPost1 = new Post("458", "This is a sample content.", "Albert", 5, 10, "10/10/2010 00:10");
             dao.create(testPost1);
         } catch (CustomDateTimeParseException e) {
         } catch (EntityAlreadyExistsException e) {
@@ -31,12 +31,8 @@ public class PostTest {
     @Test
     public void testPostCreationInvalidId() throws Exception {
         Post testPost1 = new Post("458", "This is a sample content.", "Albert", 5, 10, "10/10/2010 10:10");
-        Post testPost2 = new Post("459", "This is a sample content.", "Albert", 5, 10, "10/10/2010 00:10");
-
-        assertAll("Post creation should fail as provided ID is already existing.",
-                () -> assertThrows(EntityAlreadyExistsException.class, () -> dao.create(testPost1)),
-                () -> assertThrows(EntityAlreadyExistsException.class, () -> dao.create(testPost2)));
-
+        assertThrows(EntityAlreadyExistsException.class, () -> dao.create(testPost1),
+                "Post creation should fail as provided ID is already existing");
     }
 
     @Test(expected = CustomDateTimeParseException.class)
