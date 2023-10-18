@@ -42,7 +42,7 @@ public class PostDao implements Dao<Post> {
                         postList.add(new Post(id, content, author, likes, shares, date));
                     } catch (CustomDateTimeParseException e) {
                         System.out.println(
-                                String.format("[Error](getAll) Error parsing datetime of POST with the ID of %s", id));
+                                String.format("[Error] Error parsing datetime of POST with the ID of %s", id));
                     }
                 }
 
@@ -74,7 +74,7 @@ public class PostDao implements Dao<Post> {
                     return new Post(id, content, author, likes, shares, date);
                 } else {
                     throw new EntityNotFoundException(
-                            String.format("[Error](get) Failed to get post as POST ID: %s does not exist", postId));
+                            String.format("[Error] Failed to get post as POST ID: %s does not exist", postId));
                 }
             }
         } catch (SQLException e) {
@@ -98,7 +98,7 @@ public class PostDao implements Dao<Post> {
 
             if (existingPost.getId().equals(postId)) {
                 throw new EntityAlreadyExistsException(
-                        String.format("[Error](create) Failed to insert post as POST ID: %s already exists", postId));
+                        String.format("[Error] Failed to insert post as POST ID: %s already exists", postId));
             }
         }
 
@@ -157,7 +157,7 @@ public class PostDao implements Dao<Post> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error](update) Failed to update postser as POST ID: %s does not exist",
+                        String.format("[Error] Failed to update postser as POST ID: %s does not exist",
                                 post.getId()));
             }
         } catch (SQLException e) {
@@ -182,7 +182,7 @@ public class PostDao implements Dao<Post> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error](delete) Failed to delete post as POST ID: %s does not exist", id));
+                        String.format("[Error] Failed to delete post as POST ID: %s does not exist", id));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -219,7 +219,7 @@ public class PostDao implements Dao<Post> {
                     } catch (CustomDateTimeParseException e) {
                         System.out
                                 .println(String.format(
-                                        "[Error](getPostBySearchTerm) Error parsing datetime of POST with the ID of %s",
+                                        "[Error] Error parsing datetime of POST with the ID of %s",
                                         id));
                     }
                 }

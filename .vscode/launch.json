@@ -6,13 +6,6 @@
   "configurations": [
     {
       "type": "java",
-      "name": "CreateTables",
-      "request": "launch",
-      "mainClass": "sqlite.CreateTables",
-      "projectName": "data-analytics_b99c3037"
-    },
-    {
-      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "main.Main",

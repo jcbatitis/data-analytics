@@ -67,7 +67,7 @@ public class UserDao implements Dao<User> {
                     return new User(id, first_name, last_name, username, password, is_vip);
                 } else {
                     throw new EntityNotFoundException(
-                            String.format("[Error](get) Failed to get user as USER ID: %s does not exist", userId));
+                            String.format("[Error] Failed to get user as USER ID: %s does not exist", userId));
                 }
 
             }
@@ -86,7 +86,7 @@ public class UserDao implements Dao<User> {
 
             if (existingUser.getUsername().equals(username)) {
                 throw new EntityAlreadyExistsException(
-                        String.format("[Error](create) Failed to insert user as username: %s already exists",
+                        String.format("[Error] Failed to insert user as username: %s already exists",
                                 username));
             }
         }
@@ -148,7 +148,7 @@ public class UserDao implements Dao<User> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error](update) Failed to update user as USER ID: %s does not exist",
+                        String.format("[Error] Failed to update user as USER ID: %s does not exist",
                                 user.getUserId()));
             }
         } catch (SQLException e) {
@@ -173,7 +173,7 @@ public class UserDao implements Dao<User> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error](delete) Failed to delete user as USER ID: %s does not exist",
+                        String.format("[Error] Failed to delete user as USER ID: %s does not exist",
                                 id));
             }
         } catch (SQLException e) {
@@ -200,7 +200,7 @@ public class UserDao implements Dao<User> {
                     return new User(id, first_name, last_name, username, password, is_vip);
                 } else {
                     throw new EntityNotFoundException(
-                            String.format("[Error](checkUserIfValid) Username or password is incorrect"));
+                            String.format("[Error] Username or password is incorrect"));
                 }
             }
         } catch (SQLException e) {
@@ -238,7 +238,7 @@ public class UserDao implements Dao<User> {
                 return true;
             } else {
                 throw new EntityNotFoundException(
-                        String.format("[Error](updateRole) Failed to update user as USER ID: %s does not exist",
+                        String.format("[Error] Failed to update user as USER ID: %s does not exist",
                                 user.getUserId()));
             }
         } catch (SQLException e) {
