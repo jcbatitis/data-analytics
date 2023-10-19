@@ -100,12 +100,6 @@ public class PostView {
         postDetailTitle.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         grid.add(hbox, 0, 1);
 
-        // Post Id
-        // Label postIdLabel = new Label("Post Id: ");
-
-        // grid.add(postIdLabel, 0, 2);
-        // grid.add(postIdField, 1, 2);
-
         grid.add(contentLabel, 0, 2);
         grid.add(contentField, 0, 3);
 

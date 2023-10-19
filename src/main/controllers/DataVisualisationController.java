@@ -44,7 +44,7 @@ public class DataVisualisationController {
     public void setUser(User user) {
         this.user = user;
 
-        String welcomeMessage = String.format("Welcome %s!", user.getFirstName());
+        String welcomeMessage = "DATA VISUALISATION (SHARES) ";
         view.setHeader(welcomeMessage);
     }
 

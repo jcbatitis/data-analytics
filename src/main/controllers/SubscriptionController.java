@@ -70,6 +70,11 @@ public class SubscriptionController {
         updateUser(user);
     }
 
+    /**
+     * UPDATES THE USER DETAILS
+     * 
+     * @param payload selected user
+     */
     private void updateUser(User payload) {
         try {
             Boolean isVIP = view.getVipToggleGroupValue();
@@ -101,9 +106,9 @@ public class SubscriptionController {
     /**
      * BACK HANDLER METHOD
      * 
-     * @param e event handler variable
+     * @param event event handler variable
      */
-    private void backHandler(ActionEvent e) {
+    private void backHandler(ActionEvent event) {
         if (enforceLogout) {
             LoginView view = new LoginView();
             LoginController controller = new LoginController(view);
@@ -134,6 +139,10 @@ public class SubscriptionController {
         primaryStage.setScene(view.getScene());
     }
 
+    /**
+     * VIP TOGGLE HANDLER
+     * 
+     */
     private void vipToggleHandler() {
         view.getSubmitButton().setDisable(false);
     }

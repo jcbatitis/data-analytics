@@ -152,11 +152,11 @@ public class DashboardController {
     }
 
     /**
-     * EDIT PROFILE HANDLER METHOD
+     * EDIT USER PROFILE HANDLER METHOD
      * 
      * @param event event handler variable
      */
-    private void editProfileHandler(ActionEvent e) {
+    private void editProfileHandler(ActionEvent event) {
         UserView view = new UserView();
         UserController controller = new UserController(view);
 
@@ -170,11 +170,11 @@ public class DashboardController {
     }
 
     /**
-     * ADD POST HANDLER METHOD
+     * ADDING A POST HANDLER METHOD
      * 
      * @param event event handler variable
      */
-    private void addPostHandler(ActionEvent e) {
+    private void addPostHandler(ActionEvent event) {
         PostView view = new PostView();
         PostController controller = new PostController(view);
 
@@ -191,7 +191,12 @@ public class DashboardController {
         primaryStage.setScene(view.getScene());
     }
 
-    private void logoutHandler(ActionEvent e) {
+    /**
+     * LOGOUT USER HANDLER METHOD
+     * 
+     * @param event event handler variable
+     */
+    private void logoutHandler(ActionEvent event) {
         LoginView view = new LoginView();
         LoginController controller = new LoginController(view);
 
@@ -202,7 +207,12 @@ public class DashboardController {
         primaryStage.show();
     }
 
-    private void subscribeHandler(ActionEvent e) {
+    /**
+     * SUBSCRIBE TO VIP HANDLER METHOD
+     * 
+     * @param event event handler variable
+     */
+    private void subscribeHandler(ActionEvent event) {
         SubscriptionView view = new SubscriptionView();
         SubscriptionController controller = new SubscriptionController(view);
 
@@ -215,6 +225,11 @@ public class DashboardController {
         primaryStage.show();
     }
 
+    /**
+     * HANDLES SEARCH EVENTS
+     * 
+     * @param event event handler variable
+     */
     private void searchHandler(ActionEvent exception) {
         view.setValidationMessage("");
 
@@ -244,6 +259,11 @@ public class DashboardController {
         }
     }
 
+    /**
+     * SORT EVENT HANDLER METHOD
+     * 
+     * @param event event handler variable
+     */
     private void sortHandler(ActionEvent exception) {
         String sortBy = view.getSortToggleGroupValue();
         Integer limitValue = view.getSortValue();
@@ -268,6 +288,11 @@ public class DashboardController {
         }
     }
 
+    /**
+     * DATA VISUALISATION HANDLER METHOD
+     * 
+     * @param event event handler variable
+     */
     private void dataVisualisationHandler(ActionEvent event) {
         ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
 
@@ -283,6 +308,11 @@ public class DashboardController {
         primaryStage.show();
     }
 
+    /**
+     * EXPORTING POSTS EVENT HANDLER
+     * 
+     * @param event event handler variable
+     */
     private void exportHandler(ActionEvent error) {
         try {
             ObservableList<Post> posts = FXCollections.observableArrayList(dao.getAll());
@@ -318,6 +348,11 @@ public class DashboardController {
         }
     }
 
+    /**
+     * IMPORTING POSTS HANDLER
+     * 
+     * @param event event handler variable
+     */
     private void importHandler(ActionEvent event) {
         try {
             view.getImportButton().setDisable(true);
@@ -392,6 +427,11 @@ public class DashboardController {
         }
     }
 
+    /**
+     * TOGGLE SORT CHECKBOX HANDLER
+     * 
+     * @param event event handler variable
+     */
     private void toggleSortSectionHandler() {
         view.setValidationMessage("");
 

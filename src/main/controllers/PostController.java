@@ -59,6 +59,11 @@ public class PostController {
                 .addListener(GlobalUtil.validateIntegers(view.getSharesField()));
     }
 
+    /**
+     * SETS CURRENT POST
+     * 
+     * @param post set selected post on post details
+     */
     public void setPost(Post post) {
         this.post = post;
         this.hasPostDetails = true;
@@ -74,10 +79,20 @@ public class PostController {
         view.getSubmitButton().setText("Update");
     }
 
+    /**
+     * SETS CURRENT USER
+     * 
+     * @param user set selected user on post view
+     */
     public void setUser(User user) {
         this.user = user;
     }
 
+    /**
+     * EXPORTING POST EVENT HANDLER
+     * 
+     * @param event event handler variable
+     */
     public void exportHandler(ActionEvent event) {
         try {
             view.setValidationMessage("");
@@ -226,6 +241,11 @@ public class PostController {
         }
     }
 
+    /**
+     * DELETE POSTS EVENT HANDLER
+     * 
+     * @param event event handler variable
+     */
     private void deleteHandler(ActionEvent event) {
         try {
             Boolean job = dao.delete(post.getId());
@@ -242,6 +262,11 @@ public class PostController {
         }
     }
 
+    /**
+     * EDIT POSTS EVENT HANDLER
+     * 
+     * @param event event handler variable
+     */
     private void editHandler(ActionEvent e) {
         view.disableFormControls(false);
         view.setValidationMessage("");
