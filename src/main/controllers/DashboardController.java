@@ -148,6 +148,7 @@ public class DashboardController {
         setupDefaultPosts();
         view.getSearchField().setText("");
         view.getSortField().setText("");
+        view.setValidationMessage("");
     }
 
     /**
@@ -215,6 +216,8 @@ public class DashboardController {
     }
 
     private void searchHandler(ActionEvent exception) {
+        view.setValidationMessage("");
+
         String searchBy = "term";
         String searchTerm = view.getSearchTerm();
 
@@ -325,37 +328,56 @@ public class DashboardController {
 
                 String line;
                 br.readLine();
+                Integer importError = 0;
+                Integer importSuccess = 0;
+                Integer postsLength = 0;
 
                 while ((line = br.readLine()) != null) {
                     String[] data = line.split(",", -1);
+                    postsLength++;
 
                     if (data.length == 6) {
-
                         String id = data[0];
-                        String content = data[1];
-                        String author = data[2];
-                        int likes = Integer.parseInt(data[3]);
-                        int shares = Integer.parseInt(data[4]);
-                        String date = data[5];
 
-                        Post post = new Post(id, content, author, likes, shares, date);
+                        try {
+                            String content = data[1];
+                            String author = data[2];
+                            int likes = Integer.parseInt(data[3]);
+                            int shares = Integer.parseInt(data[4]);
+                            String date = data[5];
 
-                        if (!dao.create(post)) {
-                            System.err.println("Failed to insert post with ID: " + post.getId());
+                            Post post = new Post(id, content, author, likes, shares, date);
+                            if (dao.create(post)) {
+                                importSuccess++;
+                            }
+                        } catch (NumberFormatException e) {
+                            importError++;
+                            System.out.println(
+                                    String.format(
+                                            "[Error] Parsing likes/shares of POST with the ID of %s returned an error",
+                                            id));
+                        } catch (CustomDateTimeParseException e) {
+                            importError++;
+                            System.out.println(
+                                    String.format(
+                                            "[Error] Parsing datetime of POST with the ID of %s returned an error",
+                                            id));
+                        } catch (EntityAlreadyExistsException e) {
+                            importError++;
+                            System.out.println(
+                                    String.format(
+                                            "[Error] Inserting POST with the ID of [%s] returned an error as its already existing",
+                                            id));
                         }
                     }
                 }
-
+                String message = String.format(
+                        "Import process done. [%d/%d] \n[%d SUCCESS] and [%d UNSUCCESSFUL] imports.\nSee logs for additional information.",
+                        importSuccess, postsLength, importSuccess, importError);
                 view.toggleValidationMessageClass(true);
-                view.setValidationMessage("File imported successfully!");
+                view.setValidationMessage(message);
 
             } catch (IOException e) {
-                view.toggleValidationMessageClass(false);
-                view.setValidationMessage(e.getMessage());
-            } catch (CustomDateTimeParseException e) {
-                view.toggleValidationMessageClass(false);
-                view.setValidationMessage(e.getMessage());
-            } catch (EntityAlreadyExistsException e) {
                 view.toggleValidationMessageClass(false);
                 view.setValidationMessage(e.getMessage());
             } finally {
@@ -363,7 +385,7 @@ public class DashboardController {
             }
 
         } catch (FilePathRequiredException e) {
-            view.setValidationMessage(e.getMessage());
+            view.toggleValidationMessageClass(false);
             view.setValidationMessage(e.getMessage());
         } finally {
             view.getImportButton().setDisable(false);
@@ -371,6 +393,8 @@ public class DashboardController {
     }
 
     private void toggleSortSectionHandler() {
+        view.setValidationMessage("");
+
         Boolean isDisabled = !view.getToggleSortSection().isSelected();
         for (Toggle toggle : view.getSortToggleGroup().getToggles()) {
             Node node = (Node) toggle;
