@@ -200,13 +200,8 @@ public class PostController {
                 controller.setPost(post);
                 controller.setPrimaryStage(primaryStage);
 
-                PauseTransition pause = new PauseTransition(Duration.seconds(3));
-                pause.setOnFinished(event -> {
-                    primaryStage.setTitle(view.getTitle());
-                    primaryStage.setScene(view.getScene());
-                });
-
-                pause.play();
+                primaryStage.setTitle(view.getTitle());
+                primaryStage.setScene(view.getScene());
             }
         } catch (CustomDateTimeParseException e) {
             view.toggleValidationMessageClass(false);
